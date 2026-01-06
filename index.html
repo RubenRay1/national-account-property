@@ -46,7 +46,7 @@
             padding: 2rem;
             border-radius: 16px;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            margin-bottom: 2rem;
+            margin-bottom: 1.25rem;
         }
         
         .search-box {
@@ -164,7 +164,30 @@
             border-radius: 16px;
             box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
         }
-        
+
+        .load-more-wrap {
+            display: flex;
+            justify-content: center;
+            margin: 1.25rem 0 2rem 0;
+        }
+
+        .load-more-btn {
+            background: #F47920;
+            color: white;
+            border: none;
+            padding: 0.9rem 1.4rem;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 700;
+            transition: transform 0.2s ease, opacity 0.2s ease;
+        }
+
+        .load-more-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
         .bms-badge {
             display: inline-block;
             background: #F47920;
@@ -260,35 +283,47 @@
             <p>Customer Data Search Portal</p>
         </div>
     
-    <div class="container">
-        <div class="search-section">
-            <input type="text" id="searchBox" class="search-box" placeholder="Search across all company data and fields...">
-            <div id="stats" class="stats">Loading data...</div>
+        <div class="container">
+            <div class="search-section">
+                <input type="text" id="searchBox" class="search-box" placeholder="Search across all company data and fields...">
+                <div id="stats" class="stats">Loading data...</div>
+            </div>
+            
+            <div id="content" class="loading">Loading records from DynamoDB...</div>
+
+            <div class="load-more-wrap">
+                <button id="loadMoreBtn" class="load-more-btn hidden">Load more</button>
+            </div>
         </div>
-        
-        <div id="content" class="loading">Loading records from DynamoDB...</div>
     </div>
 
     <script>
         let currentUser = null;
+
+        // Accumulated list of items rendered so far
         let allData = [];
         let filteredData = [];
-        
+
+        // Pagination state from server
+        let nextKey = null;
+
+        // Track latest search
+        let lastQuery = "";
+
+        // ✅ TODO: replace with your NEW READ Lambda Function URL (the one that returns {items, nextKey})
+        const READ_API_BASE_URL = "https://dfj2fof6rlzfdkfuxohmfn3zgi0mygii.lambda-url.us-east-1.on.aws/";
+
         // Authentication functions
         async function checkAuthState() {
             try {
-                // Check for auth code in URL
                 const urlParams = new URLSearchParams(window.location.search);
                 const code = urlParams.get('code');
                 
                 if (code) {
-                    // Exchange code for tokens (simplified)
                     showMainApp();
                     document.getElementById('userEmail').textContent = 'Authenticated User';
-                    // Clear URL params
                     window.history.replaceState({}, document.title, window.location.pathname);
                 } else {
-                    // Check if user has valid session
                     const token = localStorage.getItem('cognitoToken');
                     if (token) {
                         showMainApp();
@@ -315,28 +350,36 @@
             loadData();
         }
         
-        // Auth event listeners - OKTA SAML only (I know this is something that needs to be change for App B)
+        // Auth event listeners
         document.getElementById('loginBtn').addEventListener('click', () => {
-            window.location.href = 'https://national-account-property.auth.us-east-1.amazoncognito.com/oauth2/authorize?identity_provider=OktaNAP&client_id=7apeuo3q6hulod0d3i002vc0b&response_type=code&scope=email+openid+profile&redirect_uri=' + encodeURIComponent(window.location.origin + '/');
+            window.location.href =
+                'https://national-account-property.auth.us-east-1.amazoncognito.com/oauth2/authorize' +
+                '?identity_provider=OktaNAP' +
+                '&client_id=7apeuo3q6hulod0d3i002vc0b' +
+                '&response_type=code' +
+                '&scope=email+openid+profile' +
+                '&redirect_uri=' + encodeURIComponent(window.location.origin + '/');
         });
         
         document.getElementById('logoutBtn').addEventListener('click', async () => {
             try {
-                // Direct logout to OKTA SAML (I know this is something that needs to be change for App B)
-                window.location.href = 'https://national-account-property.auth.us-east-1.amazoncognito.com/logout?client_id=7apeuo3q6hulod0d3i002vc0b&logout_uri=' + encodeURIComponent(window.location.origin + '/');
+                window.location.href =
+                    'https://national-account-property.auth.us-east-1.amazoncognito.com/logout' +
+                    '?client_id=7apeuo3q6hulod0d3i002vc0b' +
+                    '&logout_uri=' + encodeURIComponent(window.location.origin + '/');
             } catch (error) {
                 console.error('Error signing out:', error);
                 showAuthScreen();
             }
         });
-        
+
         // Format field names for display
         function formatFieldName(key) {
             return key.replace(/_/g, ' ')
                      .replace(/\b\w/g, l => l.toUpperCase())
                      .replace(/unnamed/gi, 'Field');
         }
-        
+
         // Field mapping for better display
         const fieldMapping = [
             'Company Name',
@@ -392,28 +435,27 @@
             'Final Recipient',
             'Special Instructions'
         ];
-        
-        // Display records with proper field mapping
+
+        // Display records
         function displayRecords(records) {
             const content = document.getElementById('content');
-            
-            if (records.length === 0) {
+
+            if (!records || records.length === 0) {
                 content.innerHTML = '<div class="no-results">No records found matching your search.</div>';
                 return;
             }
-            
+
             const grid = document.createElement('div');
             grid.className = 'records-grid';
-            
+
             records.forEach((record, index) => {
                 const card = document.createElement('div');
                 card.className = 'record-card';
-                
+
                 const companyName = record.original_company || record.company || `Company Record ${index + 1}`;
-                
+
                 let fieldsHtml = '';
-                
-                // Display mapped fields from data array
+
                 if (record.data && Array.isArray(record.data)) {
                     record.data.forEach((value, idx) => {
                         if (value && String(value).trim() !== '' && idx < fieldMapping.length) {
@@ -424,8 +466,7 @@
                         }
                     });
                 }
-                
-                // Display other fields
+
                 Object.keys(record).forEach(key => {
                     if (key !== 'data' && key !== 'company') {
                         const value = record[key];
@@ -440,7 +481,7 @@
                         }
                     }
                 });
-                
+
                 card.innerHTML = `
                     <div class="record-header" onclick="toggleCard(this)">
                         ${companyName}
@@ -452,85 +493,122 @@
                         </div>
                     </div>
                 `;
-                
+
                 grid.appendChild(card);
             });
-            
+
             content.innerHTML = '';
             content.appendChild(grid);
         }
-        
-        // Update statistics
+
         function updateStats() {
             const stats = document.getElementById('stats');
-            const total = allData.length;
-            const filtered = filteredData.length;
-            
-            if (filtered === total) {
-                stats.textContent = `Showing ${total} company records`;
+            const totalLoaded = allData.length;
+
+            if (lastQuery && lastQuery.trim()) {
+                stats.textContent = `Loaded ${totalLoaded} matching records (server-side search)`;
             } else {
-                stats.textContent = `Showing ${filtered} of ${total} company records`;
+                stats.textContent = `Loaded ${totalLoaded} records`;
             }
         }
-        
-        // Toggle card expansion
+
         function toggleCard(header) {
             const card = header.parentElement;
             card.classList.toggle('expanded');
         }
-        
-        // Search functionality with direct DynamoDB API call
-        async function searchRecords(query) {
+
+        function setLoading(message) {
+            const content = document.getElementById('content');
+            content.innerHTML = `<div class="loading">${message}</div>`;
+        }
+
+        function showLoadMoreButton(show) {
+            const btn = document.getElementById('loadMoreBtn');
+            if (show) btn.classList.remove('hidden');
+            else btn.classList.add('hidden');
+        }
+
+        function setLoadMoreLoading(isLoading) {
+            const btn = document.getElementById('loadMoreBtn');
+            btn.disabled = isLoading;
+            btn.textContent = isLoading ? "Loading..." : "Load more";
+        }
+
+        // ✅ NEW: Server-side paging + search
+        async function fetchPage(query, reset = false) {
             try {
-                // Direct API call to Lambda function
-                const response = await fetch('https://vpswoxk2zk5g5dg6whhn352mwm0bgyou.lambda-url.us-east-1.on.aws/', {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    mode: 'cors'
+                if (!READ_API_BASE_URL || READ_API_BASE_URL.includes("YOUR_NEW_READ_LAMBDA_URL_HERE")) {
+                    throw new Error("READ_API_BASE_URL is not set. Replace it with your new READ Lambda Function URL.");
+                }
+
+                if (reset) {
+                    nextKey = null;
+                    allData = [];
+                    filteredData = [];
+                    setLoading("Loading records from DynamoDB...");
+                }
+
+                const params = new URLSearchParams();
+                if (query) params.set("q", query);
+                params.set("limit", "50");
+                if (nextKey) params.set("lastKey", JSON.stringify(nextKey));
+
+                const url = `${READ_API_BASE_URL}?${params.toString()}`;
+
+                const response = await fetch(url, {
+                    method: "GET",
+                    mode: "cors"
                 });
-                
+
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
-                
-                const data = await response.json();
-                console.log('Loaded data:', data.length, 'records');
-                
-                // Filter data based on search query
-                let filteredData = data;
-                if (query && query.trim()) {
-                    const searchTerm = query.toLowerCase();
-                    filteredData = data.filter(record => {
-                        return Object.values(record).some(value => 
-                            value && value.toString().toLowerCase().includes(searchTerm)
-                        );
-                    });
-                }
-                
-                allData = data;
-                filteredData = filteredData;
+
+                const payload = await response.json();
+                const items = payload.items || [];
+                nextKey = payload.nextKey || null;
+
+                allData = allData.concat(items);
+                filteredData = allData;
+
                 displayRecords(filteredData);
                 updateStats();
+
+                // show load more if server says we have more pages
+                showLoadMoreButton(!!nextKey);
+
             } catch (error) {
-                console.error('Error loading records:', error);
-                document.getElementById('content').innerHTML = 
+                console.error("Error loading records:", error);
+                document.getElementById('content').innerHTML =
                     '<div class="no-results">Error loading data: ' + error.message + '</div>';
+                showLoadMoreButton(false);
+            } finally {
+                setLoadMoreLoading(false);
             }
         }
-        
+
         // Load initial data
         function loadData() {
-            searchRecords('');
+            lastQuery = "";
+            fetchPage("", true);
         }
-        
-        // Event listeners
+
+        // Search input: reset paging and fetch first page
         document.getElementById('searchBox').addEventListener('input', (e) => {
-            const query = e.target.value;
-            searchRecords(query);
+            const query = e.target.value.trim();
+            lastQuery = query;
+
+            // reset paging + fetch first page
+            setLoadMoreLoading(false);
+            fetchPage(query, true);
         });
-        
+
+        // Load more button
+        document.getElementById('loadMoreBtn').addEventListener('click', () => {
+            setLoadMoreLoading(true);
+            fetchPage(lastQuery, false);
+        });
+
         // Initialize
         checkAuthState();
     </script>
