@@ -199,6 +199,33 @@
       font-size: 0.9rem;
     }
 
+    /* ==============================
+       ✅ NEW: SKELETON LOADER STYLES
+       ============================== */
+    .skeleton-card {
+      background: rgba(255,255,255,0.95);
+      border-radius: 16px;
+      padding: 1.25rem;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+      overflow: hidden;
+    }
+    .sk-line {
+      height: 14px;
+      border-radius: 8px;
+      margin: 10px 0;
+      background: linear-gradient(90deg, #ececec, #f5f5f5, #ececec);
+      background-size: 200% 100%;
+      animation: shimmer 1.2s infinite;
+    }
+    .sk-line.w40 { width: 40%; }
+    .sk-line.w60 { width: 60%; }
+    .sk-line.w80 { width: 80%; }
+
+    @keyframes shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
     .hidden { display:none; }
   </style>
 </head>
@@ -241,9 +268,8 @@
     // ==============================
     // CONFIG
     // ==============================
-    // ✅ Replace with your READ Lambda Function URL that returns: { items: [...], nextKey: {...} }
+    // ✅ Replace with your READ Lambda Function URL that returns: { items: [...], nextKey: {...}, total: 64107, mode: "scan"|"exact_record" }
     const READ_API_BASE_URL = "https://dfj2fof6rlzfdkfuxohmfn3zgi0mygii.lambda-url.us-east-1.on.aws/";
-
     const PAGE_SIZE = 50;
 
     // ==============================
@@ -253,6 +279,9 @@
     let nextKey = null;
     let lastQuery = "";
     let isLoading = false;
+
+    // ✅ NEW: total count for better UX (comes from Lambda as payload.total)
+    let totalCount = null;
 
     // ==============================
     // AUTH (unchanged)
@@ -317,6 +346,22 @@
       document.getElementById("content").innerHTML = `<div class="loading">${message}</div>`;
     }
 
+    // ✅ NEW: skeleton loader
+    function renderSkeleton() {
+      const content = document.getElementById("content");
+      content.innerHTML = `
+        <div class="records-grid">
+          ${Array.from({ length: 6 }).map(() => `
+            <div class="skeleton-card">
+              <div class="sk-line w60"></div>
+              <div class="sk-line w80"></div>
+              <div class="sk-line w40"></div>
+            </div>
+          `).join("")}
+        </div>
+      `;
+    }
+
     function showLoadMoreButton(show) {
       const btn = document.getElementById("loadMoreBtn");
       if (show) btn.classList.remove("hidden");
@@ -329,10 +374,22 @@
       btn.textContent = loading ? "Loading..." : "Load more";
     }
 
-    function updateStats() {
+    // ✅ NEW: stats as range + total
+    function updateStatsRange() {
       const stats = document.getElementById("stats");
-      if (lastQuery) stats.textContent = `Loaded ${allData.length} matching records`;
-      else stats.textContent = `Loaded ${allData.length} records`;
+      const loaded = allData.length;
+
+      if (typeof totalCount === "number") {
+        const start = loaded > 0 ? 1 : 0;
+        const end = loaded;
+        stats.textContent = `Showing ${start}–${end} of ~${totalCount} records`;
+      } else {
+        stats.textContent = `Loaded ${loaded} records`;
+      }
+    }
+
+    function updateStats() {
+      updateStatsRange();
     }
 
     function formatFieldName(key) {
@@ -409,7 +466,7 @@
           allData = [];
           nextKey = null;
           showLoadMoreButton(false);
-          setLoading("Loading records from DynamoDB...");
+          renderSkeleton(); // ✅ skeleton on reset
         }
 
         const params = new URLSearchParams();
@@ -431,12 +488,20 @@
         const items = Array.isArray(payload.items) ? payload.items : [];
         nextKey = payload.nextKey || null;
 
-        allData = allData.concat(items);
+        // ✅ new: keep total for UX
+        if (typeof payload.total === "number") totalCount = payload.total;
 
+        // ✅ append + render
+        allData = allData.concat(items);
         displayRecords(allData);
         updateStats();
 
-        showLoadMoreButton(!!nextKey);
+        // ✅ new: if exact record lookup, never show Load more
+        if (payload.mode === "exact_record") {
+          showLoadMoreButton(false);
+        } else {
+          showLoadMoreButton(!!nextKey);
+        }
       } catch (err) {
         console.error("Fetch error:", err);
         document.getElementById("content").innerHTML =
@@ -456,12 +521,14 @@
       fetchPage({ query: "", reset: true });
     }
 
+    // Search input: reset paging and fetch first page
     document.getElementById("searchBox").addEventListener("input", (e) => {
       lastQuery = e.target.value.trim();
       setLoadMoreLoading(false);
       fetchPage({ query: lastQuery, reset: true });
     });
 
+    // Load more button
     document.getElementById("loadMoreBtn").addEventListener("click", () => {
       setLoadMoreLoading(true);
       fetchPage({ query: lastQuery, reset: false });
