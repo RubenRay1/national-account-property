@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-  <title>BMS Customer Lookup - Secure Portal</title>
+  <title>National Account Property - Secure Portal</title>
   <script src="https://unpkg.com/aws-amplify@5.3.12/dist/aws-amplify.min.js"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -233,7 +233,7 @@
   <!-- Authentication Screen -->
   <div id="authScreen" class="auth-container">
     <div class="auth-card">
-      <h1>BMS Customer Lookup <span class="bms-badge">BMS</span></h1>
+      <h1>National Account Property <span class="bms-badge">BMS</span></h1>
       <p style="margin: 1rem 0; color: #666;">Secure access to customer data</p>
       <button id="loginBtn" class="auth-button">Sign In with OKTA</button>
     </div>
@@ -246,13 +246,13 @@
         <span id="userEmail">Loading...</span>
         <button id="logoutBtn" class="logout-btn">Sign Out</button>
       </div>
-      <h1>BMS Customer Lookup <span class="bms-badge">BMS</span></h1>
-      <p>Customer Data Search Portal</p>
+      <h1>BMS National Account Property <span class="bms-badge">BMS CAT</span></h1>
+      <p>National Account Property Search Portal</p>
     </div>
 
     <div class="container">
       <div class="search-section">
-        <input type="text" id="searchBox" class="search-box" placeholder="Search (server-side)..." />
+        <input type="text" id="searchBox" class="search-box" placeholder="Search (Record ID)..." />
         <div id="stats" class="stats">Loading data...</div>
       </div>
 
