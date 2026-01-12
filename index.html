@@ -97,12 +97,6 @@
     }
     .record-card.expanded .record-content { padding: 1.5rem; max-height: none; }
 
-    /* ======================================================
-       ✅ UPDATED FIELD LAYOUT (matches your Protocol app)
-       - Uses .field-row wrapper
-       - Border spans both columns
-       - Mobile stacks label above value
-    ====================================================== */
     .field-grid {
       display: grid;
       gap: 0; /* rows manage spacing */
@@ -257,8 +251,11 @@
       font-size: 0.9rem;
     }
 
+    /* Hide Sign Out button (but keep it in the DOM so JS doesn't break) */
+    #logoutBtn { display: none !important; }
+
     /* ==============================
-       ✅ NEW: SKELETON LOADER STYLES
+       NEW: SKELETON LOADER STYLES
        ============================== */
     .skeleton-card {
       background: rgba(255,255,255,0.95);
@@ -479,7 +476,7 @@
 
         let fieldsHtml = "";
 
-        // ✅ UPDATED: wrap each label/value pair in .field-row (matches Protocol)
+        // UPDATED: wrap each label/value pair in .field-row (matches Protocol)
         Object.keys(record).forEach(key => {
           const value = record[key];
           if (value !== null && value !== undefined && String(value).trim() !== "") {
