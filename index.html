@@ -318,7 +318,7 @@
 
     <div class="container">
       <div class="search-section">
-        <input type="text" id="searchBox" class="search-box" placeholder="Search (Company)..." />
+        <input type="text" id="searchBox" class="search-box" placeholder="Search (Record)..." />
         <div id="stats" class="stats">Loading data...</div>
       </div>
 
@@ -553,10 +553,25 @@
         let fieldsHtml = "";
 
         FIELD_ORDER.forEach(label => {
-          const normalizedLabel = normalizeKey(label);
-          const originalKey = keyMap.get(normalizedLabel);
+        const normalizedLabel = normalizeKey(label);
 
-          if (!originalKey) return;
+        // try exact match first
+        let originalKey = keyMap.get(normalizedLabel);
+
+        // ✅ fallback: try underscore version (Account Manager -> Account_Manager)
+        if (!originalKey) {
+          const underscoreLabel = normalizeKey(label).replace(/\s+/g, "_");
+          originalKey = keyMap.get(underscoreLabel);
+        }
+
+        // fallback: try removing spaces entirely (rare, but safe)
+        if (!originalKey) {
+          const nospaceLabel = normalizeKey(label).replace(/\s+/g, "");
+          originalKey = keyMap.get(nospaceLabel);
+        }
+
+        if (!originalKey) return;
+
           if (excludedNormalizedKeys.has(normalizedLabel)) return;
 
           const value = record[originalKey];
