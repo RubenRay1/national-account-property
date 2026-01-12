@@ -35,22 +35,64 @@
       margin-bottom: 1.25rem;
     }
 
+    /* ✅ NEW: search controls row (dropdown + input) */
+    .search-controls {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .filter-select {
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      background: white;
+      border: 2px solid #e1e5e9;
+      border-radius: 12px;
+      padding: 1rem 2.5rem 1rem 1rem;
+      font-size: 16px;
+      color: #333;
+      cursor: pointer;
+      min-width: 180px;
+      transition: border-color 0.3s ease;
+      background-image:
+        linear-gradient(45deg, transparent 50%, #666 50%),
+        linear-gradient(135deg, #666 50%, transparent 50%),
+        linear-gradient(to right, transparent, transparent);
+      background-position:
+        calc(100% - 20px) calc(50% - 3px),
+        calc(100% - 14px) calc(50% - 3px),
+        0 0;
+      background-size:
+        6px 6px,
+        6px 6px,
+        100% 100%;
+      background-repeat: no-repeat;
+    }
+
+    .filter-select:focus {
+      outline: none;
+      border-color: #2B73B5;
+      box-shadow: 0 0 0 3px rgba(43,115,181,0.1);
+    }
+
     .search-box {
       width: 100%;
       padding: 1rem;
       border: 2px solid #e1e5e9;
       border-radius: 12px;
       font-size: 16px;
-      margin-bottom: 1rem;
       transition: border-color 0.3s ease;
     }
+
     .search-box:focus {
       outline: none;
       border-color: #2B73B5;
       box-shadow: 0 0 0 3px rgba(43,115,181,0.1);
     }
 
-    .stats { text-align:center; color:#666; margin-bottom: 1rem; font-weight: 500; }
+    .stats { text-align:center; color:#666; margin-bottom: 0; font-weight: 500; }
 
     .loading {
       text-align: center;
@@ -97,20 +139,16 @@
     }
     .record-card.expanded .record-content { padding: 1.5rem; max-height: none; }
 
-    .field-grid {
-      display: grid;
-      gap: 0; /* rows manage spacing */
-    }
+    .field-grid { display: grid; gap: 0; }
 
     .field-row {
       display: grid;
-      grid-template-columns: 1fr 2fr; /* desktop/tablet */
+      grid-template-columns: 1fr 2fr;
       gap: 0.75rem;
       align-items: start;
       border-bottom: 1px solid #f0f0f0;
       padding: 0.75rem 0;
     }
-
     .field-row:last-child { border-bottom: none; }
 
     .field-label {
@@ -126,42 +164,41 @@
       border-bottom: none;
       line-height: 1.5;
       white-space: pre-wrap;
-
       word-break: normal;
       overflow-wrap: anywhere;
       hyphens: auto;
     }
 
-    /* Mobile stack (same behavior as Protocol) */
     @media (max-width: 768px) {
       .container { padding: 1rem; }
       .search-section { padding: 1.25rem; }
+
+      /* ✅ NEW: stack filter + input on mobile */
+      .search-controls {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.6rem;
+      }
+      .filter-select {
+        min-width: unset;
+        width: 100%;
+      }
 
       .record-header {
         padding: 1rem;
         font-size: 1.05rem;
       }
 
-      .record-card.expanded .record-content {
-        padding: 1rem;
-      }
+      .record-card.expanded .record-content { padding: 1rem; }
 
       .field-row {
-        grid-template-columns: 1fr; /* stack */
+        grid-template-columns: 1fr;
         gap: 0.35rem;
         padding: 0.9rem 0;
       }
 
-      .field-label {
-        font-size: 0.95rem;
-        line-height: 1.25;
-      }
-
-      .field-value {
-        font-size: 1rem;
-        line-height: 1.45;
-        color: #444;
-      }
+      .field-label { font-size: 0.95rem; line-height: 1.25; }
+      .field-value { font-size: 1rem; line-height: 1.45; color: #444; }
     }
 
     .no-results {
@@ -251,12 +288,8 @@
       font-size: 0.9rem;
     }
 
-    /* Hide Sign Out button (but keep it in the DOM so JS doesn't break) */
     #logoutBtn { display: none !important; }
 
-    /* ==============================
-       NEW: SKELETON LOADER STYLES
-       ============================== */
     .skeleton-card {
       background: rgba(255,255,255,0.95);
       border-radius: 16px;
@@ -285,7 +318,6 @@
   </style>
 </head>
 <body>
-  <!-- Authentication Screen -->
   <div id="authScreen" class="auth-container">
     <div class="auth-card">
       <h1>National Account Property <span class="bms-badge">BMS</span></h1>
@@ -294,7 +326,6 @@
     </div>
   </div>
 
-  <!-- Main Application -->
   <div id="mainApp" class="hidden">
     <div class="header">
       <div class="user-info">
@@ -307,7 +338,24 @@
 
     <div class="container">
       <div class="search-section">
-        <input type="text" id="searchBox" class="search-box" placeholder="Search (Record ID)..." />
+
+        <!-- ✅ NEW: Filter + Search input row -->
+        <div class="search-controls">
+          <select id="searchFilter" class="filter-select">
+            <option value="record" selected>Record</option>
+            <option value="vertical">Vertical</option>
+            <option value="account">Account</option>
+            <option value="all">All fields</option>
+          </select>
+
+          <input
+            type="text"
+            id="searchBox"
+            class="search-box"
+            placeholder="Search by Record..."
+          />
+        </div>
+
         <div id="stats" class="stats">Loading data...</div>
       </div>
 
@@ -333,8 +381,10 @@
     let nextKey = null;
     let lastQuery = "";
     let isLoading = false;
-
     let totalCount = null;
+
+    // ✅ NEW: selected search field
+    let searchField = "record"; // record | vertical | account | all
 
     // ==============================
     // AUTH (unchanged)
@@ -395,10 +445,6 @@
     // ==============================
     // UI HELPERS
     // ==============================
-    function setLoading(message) {
-      document.getElementById("content").innerHTML = `<div class="loading">${message}</div>`;
-    }
-
     function renderSkeleton() {
       const content = document.getElementById("content");
       content.innerHTML = `
@@ -454,6 +500,24 @@
       card.classList.toggle("expanded");
     }
 
+    // ✅ NEW: update placeholder text based on filter
+    function updateSearchPlaceholder() {
+      const searchBox = document.getElementById("searchBox");
+      switch (searchField) {
+        case "vertical":
+          searchBox.placeholder = "Search by Vertical...";
+          break;
+        case "account":
+          searchBox.placeholder = "Search by Account...";
+          break;
+        case "all":
+          searchBox.placeholder = "Search (Record / Vertical / Account)...";
+          break;
+        default:
+          searchBox.placeholder = "Search by Record...";
+      }
+    }
+
     // ==============================
     // RENDER
     // ==============================
@@ -476,7 +540,6 @@
 
         let fieldsHtml = "";
 
-        // UPDATED: wrap each label/value pair in .field-row (matches Protocol)
         Object.keys(record).forEach(key => {
           const value = record[key];
           if (value !== null && value !== undefined && String(value).trim() !== "") {
@@ -523,12 +586,19 @@
         }
 
         const params = new URLSearchParams();
+
+        // keep q behavior
         if (query) params.set("q", query);
+
+        // ✅ NEW: send chosen field to Lambda
+        // Your Lambda must support this param for Vertical/Account searching.
+        // Suggestion: read params.field and apply appropriate Query/Scan/Filter.
+        params.set("field", searchField);
+
         params.set("limit", String(PAGE_SIZE));
         if (nextKey) params.set("lastKey", JSON.stringify(nextKey));
 
         const url = `${READ_API_BASE_URL}?${params.toString()}`;
-
         const res = await fetch(url, { method: "GET", mode: "cors" });
 
         if (!res.ok) {
@@ -571,10 +641,28 @@
       fetchPage({ query: "", reset: true });
     }
 
+    let searchTimer = null;
+
+    // ✅ NEW: changing filter triggers a fresh search
+    document.getElementById("searchFilter").addEventListener("change", (e) => {
+      searchField = e.target.value;
+      updateSearchPlaceholder();
+
+      // re-run current search with new filter
+      clearTimeout(searchTimer);
+      searchTimer = setTimeout(() => {
+        fetchPage({ query: lastQuery, reset: true });
+      }, 150);
+    });
+
     document.getElementById("searchBox").addEventListener("input", (e) => {
       lastQuery = e.target.value.trim();
-      setLoadMoreLoading(false);
-      fetchPage({ query: lastQuery, reset: true });
+
+      clearTimeout(searchTimer);
+      searchTimer = setTimeout(() => {
+        setLoadMoreLoading(false);
+        fetchPage({ query: lastQuery, reset: true });
+      }, 250);
     });
 
     document.getElementById("loadMoreBtn").addEventListener("click", () => {
@@ -582,6 +670,8 @@
       fetchPage({ query: lastQuery, reset: false });
     });
 
+    // INIT
+    updateSearchPlaceholder();
     checkAuthState();
   </script>
 </body>
