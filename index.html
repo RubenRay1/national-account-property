@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-  <title>National Account Protocol - Secure Portal</title>
+  <title>National Account Property - Secure Portal</title>
   <script src="https://unpkg.com/aws-amplify@5.3.12/dist/aws-amplify.min.js"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -97,86 +97,19 @@
     }
     .record-card.expanded .record-content { padding: 1.5rem; max-height: none; }
 
-    /* ==============================
-       ALIGNMENT FIX (CHANGED)
-       - Make each Q/A pair a "row"
-       - Border goes on the row so it spans both columns
-    ============================== */
-
-    .field-grid {
-      display: grid;
-      gap: 0; /* rows manage spacing */
-    }
-
-    .field-row {
-      display: grid;
-      grid-template-columns: 1fr 2fr;  /* DESKTOP/TABLET default stays the same */
-      gap: 0.75rem;
-      align-items: start;
-      border-bottom: 1px solid #f0f0f0;
-      padding: 0.75rem 0;
-    }
-
-    .field-row:last-child {
-      border-bottom: none;
-    }
-
+    .field-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 0.75rem; align-items: start; }
     .field-label {
       font-weight: 600;
       color: #1F4788;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid #f0f0f0;
       font-size: 0.9rem;
-      padding: 0;
-      border-bottom: none;
     }
-
     .field-value {
-      padding: 0;
-      border-bottom: none;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid #f0f0f0;
+      word-break: break-word;
       line-height: 1.5;
-      white-space: pre-wrap; /* keeps newlines readable */
-
-      /* ✅ Fix ugly mid-word breaks on mobile Safari / narrow columns */
-      word-break: normal;        /* do NOT split words mid-word by default */
-      overflow-wrap: anywhere;   /* still prevents overflow for long strings/URLs */
-      hyphens: auto;
-    }
-
-    /* ==============================
-       MOBILE-ONLY LAYOUT (NEW)
-       - Stack label above value
-       - Tighten spacing
-       - Prevent the "every word on a new line" look
-       - DOES NOT AFFECT DESKTOP
-    ============================== */
-    @media (max-width: 768px) {
-      .container { padding: 1rem; }
-      .search-section { padding: 1.25rem; }
-
-      .record-header {
-        padding: 1rem;
-        font-size: 1.05rem;
-      }
-
-      .record-card.expanded .record-content {
-        padding: 1rem;
-      }
-
-      .field-row {
-        grid-template-columns: 1fr; /* ✅ stack */
-        gap: 0.35rem;
-        padding: 0.9rem 0;
-      }
-
-      .field-label {
-        font-size: 0.95rem;
-        line-height: 1.25;
-      }
-
-      .field-value {
-        font-size: 1rem;
-        line-height: 1.45;
-        color: #444;
-      }
     }
 
     .no-results {
@@ -266,10 +199,9 @@
       font-size: 0.9rem;
     }
 
-
-    #logoutBtn { display: none !important; }
-
-
+    /* ==============================
+       ✅ NEW: SKELETON LOADER STYLES
+       ============================== */
     .skeleton-card {
       background: rgba(255,255,255,0.95);
       border-radius: 16px;
@@ -298,6 +230,7 @@
   </style>
 </head>
 <body>
+  <!-- Authentication Screen -->
   <div id="authScreen" class="auth-container">
     <div class="auth-card">
       <h1>National Account Property <span class="bms-badge">BMS</span></h1>
@@ -306,6 +239,7 @@
     </div>
   </div>
 
+  <!-- Main Application -->
   <div id="mainApp" class="hidden">
     <div class="header">
       <div class="user-info">
@@ -318,7 +252,7 @@
 
     <div class="container">
       <div class="search-section">
-        <input type="text" id="searchBox" class="search-box" placeholder="Search (Record)..." />
+        <input type="text" id="searchBox" class="search-box" placeholder="Search (Record ID)..." />
         <div id="stats" class="stats">Loading data...</div>
       </div>
 
@@ -334,36 +268,9 @@
     // ==============================
     // CONFIG
     // ==============================
+    // ✅ Replace with your READ Lambda Function URL that returns: { items: [...], nextKey: {...}, total: 64107, mode: "scan"|"exact_record" }
     const READ_API_BASE_URL = "https://dfj2fof6rlzfdkfuxohmfn3zgi0mygii.lambda-url.us-east-1.on.aws/";
     const PAGE_SIZE = 50;
-
-    // ✅ EXACT Excel column order (left → right), rendered top → bottom in the app
-    const FIELD_ORDER = [
-      "Record",
-      "Vertical",
-      "Account",
-      "Account Manager",
-      "Location Name",
-      "Address",
-      "City",
-      "State",
-      "Zip",
-      "Main Phone",
-      "Ownership",
-      "Management",
-      "Contact Name",
-      "Contact Title",
-      "Contact Phone",
-      "Contact Email",
-      "Contact2 Name",
-      "Contact2 Title",
-      "Contact2 Phone",
-      "Contact2 Email",
-      "BMS Location",
-      "Distance",
-      "Latitude",
-      "Longitude"
-    ];
 
     // ==============================
     // STATE
@@ -372,8 +279,9 @@
     let nextKey = null;
     let lastQuery = "";
     let isLoading = false;
+
+    // ✅ NEW: total count for better UX (comes from Lambda as payload.total)
     let totalCount = null;
-    let matchedTotal = null;
 
     // ==============================
     // AUTH (unchanged)
@@ -432,34 +340,13 @@
     });
 
     // ==============================
-    // HELPERS
+    // UI HELPERS
     // ==============================
-
-    function normalizeKey(s) {
-      return String(s ?? "")
-        .replace(/\r\n/g, "\n")
-        .replace(/\s+/g, " ")
-        .replace(/\s*\n\s*/g, "\n")
-        .trim();
+    function setLoading(message) {
+      document.getElementById("content").innerHTML = `<div class="loading">${message}</div>`;
     }
 
-    function buildKeyMap(record) {
-      const map = new Map();
-      Object.keys(record || {}).forEach(k => {
-        map.set(normalizeKey(k), k);
-      });
-      return map;
-    }
-
-    function getCompanyTitle(record) {
-      return (
-        record.Record ||
-        record.record ||
-        record["Record"] ||
-        "Record"
-      );
-    }
-
+    // ✅ NEW: skeleton loader
     function renderSkeleton() {
       const content = document.getElementById("content");
       content.innerHTML = `
@@ -487,16 +374,10 @@
       btn.textContent = loading ? "Loading..." : "Load more";
     }
 
+    // ✅ NEW: stats as range + total
     function updateStatsRange() {
       const stats = document.getElementById("stats");
       const loaded = allData.length;
-
-      if (lastQuery && typeof matchedTotal === "number") {
-        const start = loaded > 0 ? 1 : 0;
-        const end = loaded;
-        stats.textContent = `Showing ${start}–${end} of ${matchedTotal} matches`;
-        return;
-      }
 
       if (typeof totalCount === "number") {
         const start = loaded > 0 ? 1 : 0;
@@ -511,8 +392,10 @@
       updateStatsRange();
     }
 
-    function prettyLabel(label) {
-      return normalizeKey(label);
+    function formatFieldName(key) {
+      return key.replace(/_/g, " ")
+        .replace(/\b\w/g, l => l.toUpperCase())
+        .replace(/unnamed/gi, "Field");
     }
 
     function toggleCard(header) {
@@ -531,70 +414,27 @@
         return;
       }
 
-      records = [...records].sort((a, b) =>
-        String(getCompanyTitle(a)).localeCompare(String(getCompanyTitle(b)))
-      );
-
       const grid = document.createElement("div");
       grid.className = "records-grid";
 
-      records.forEach((record) => {
+      records.forEach((record, index) => {
         const card = document.createElement("div");
         card.className = "record-card";
 
-        const title = getCompanyTitle(record);
-        const keyMap = buildKeyMap(record);
-
-        const excludedNormalizedKeys = new Set([
-          normalizeKey("Record"),
-          normalizeKey("record")
-        ]);
+        // Prefer Record as the title since that is your PK and guaranteed unique
+        const title = record.Record || record.record || `Record ${index + 1}`;
 
         let fieldsHtml = "";
 
-        FIELD_ORDER.forEach(label => {
-        const normalizedLabel = normalizeKey(label);
-
-        // try exact match first
-        let originalKey = keyMap.get(normalizedLabel);
-
-        // ✅ fallback: try underscore version (Account Manager -> Account_Manager)
-        if (!originalKey) {
-          const underscoreLabel = normalizeKey(label).replace(/\s+/g, "_");
-          originalKey = keyMap.get(underscoreLabel);
-        }
-
-        // fallback: try removing spaces entirely (rare, but safe)
-        if (!originalKey) {
-          const nospaceLabel = normalizeKey(label).replace(/\s+/g, "");
-          originalKey = keyMap.get(nospaceLabel);
-        }
-
-        if (!originalKey) return;
-
-          if (excludedNormalizedKeys.has(normalizedLabel)) return;
-
-          const value = record[originalKey];
-          if (value === null || value === undefined) return;
-
-          const str = Array.isArray(value) ? value.join(", ") : String(value);
-          const normalizedValue = str.trim().toLowerCase();
-
-          if (
-            normalizedValue === "" ||
-            normalizedValue === "n/a" ||
-            normalizedValue === "na" ||
-            normalizedValue === "n//a"
-          ) {
-            return;
+        Object.keys(record).forEach(key => {
+          const value = record[key];
+          if (value !== null && value !== undefined && String(value).trim() !== "") {
+            const displayValue = Array.isArray(value) ? value.join(", ") : String(value);
+            fieldsHtml += `
+              <div class="field-label">${formatFieldName(key)}</div>
+              <div class="field-value">${displayValue}</div>
+            `;
           }
-
-          fieldsHtml += `
-            <div class="field-row">
-              <div class="field-label">${prettyLabel(label)}</div>
-              <div class="field-value">${str}</div>
-            </div>
-          `;
         });
 
         card.innerHTML = `
@@ -625,9 +465,8 @@
         if (reset) {
           allData = [];
           nextKey = null;
-          matchedTotal = null;
           showLoadMoreButton(false);
-          renderSkeleton();
+          renderSkeleton(); // ✅ skeleton on reset
         }
 
         const params = new URLSearchParams();
@@ -636,6 +475,7 @@
         if (nextKey) params.set("lastKey", JSON.stringify(nextKey));
 
         const url = `${READ_API_BASE_URL}?${params.toString()}`;
+
         const res = await fetch(url, { method: "GET", mode: "cors" });
 
         if (!res.ok) {
@@ -644,17 +484,19 @@
         }
 
         const payload = await res.json();
-        matchedTotal = (typeof payload.matchedTotal === "number") ? payload.matchedTotal : null;
 
         const items = Array.isArray(payload.items) ? payload.items : [];
         nextKey = payload.nextKey || null;
 
+        // ✅ new: keep total for UX
         if (typeof payload.total === "number") totalCount = payload.total;
 
+        // ✅ append + render
         allData = allData.concat(items);
         displayRecords(allData);
         updateStats();
 
+        // ✅ new: if exact record lookup, never show Load more
         if (payload.mode === "exact_record") {
           showLoadMoreButton(false);
         } else {
@@ -679,23 +521,20 @@
       fetchPage({ query: "", reset: true });
     }
 
-    let searchTimer = null;
-
+    // Search input: reset paging and fetch first page
     document.getElementById("searchBox").addEventListener("input", (e) => {
       lastQuery = e.target.value.trim();
-
-      clearTimeout(searchTimer);
-      searchTimer = setTimeout(() => {
-        setLoadMoreLoading(false);
-        fetchPage({ query: lastQuery, reset: true });
-      }, 250);
+      setLoadMoreLoading(false);
+      fetchPage({ query: lastQuery, reset: true });
     });
 
+    // Load more button
     document.getElementById("loadMoreBtn").addEventListener("click", () => {
       setLoadMoreLoading(true);
       fetchPage({ query: lastQuery, reset: false });
     });
 
+    // INIT
     checkAuthState();
   </script>
 </body>
