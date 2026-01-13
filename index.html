@@ -339,12 +339,13 @@
     <div class="container">
       <div class="search-section">
 
-        <!-- ✅ NEW: Filter + Search input row -->
+        <!-- Filter + Search input row -->
         <div class="search-controls">
           <select id="searchFilter" class="filter-select">
             <option value="record" selected>Record</option>
             <option value="vertical">Vertical</option>
             <option value="account">Account</option>
+            <option value="address">Address</option>
             <option value="all">All fields</option>
           </select>
 
@@ -383,7 +384,7 @@
     let isLoading = false;
     let totalCount = null;
 
-    // ✅ NEW: selected search field
+    // selected search field
     let searchField = "record"; // record | vertical | account | all
 
     // ==============================
@@ -500,7 +501,7 @@
       card.classList.toggle("expanded");
     }
 
-    // ✅ NEW: update placeholder text based on filter
+    // NEW: update placeholder text based on filter
     function updateSearchPlaceholder() {
       const searchBox = document.getElementById("searchBox");
       switch (searchField) {
@@ -510,8 +511,11 @@
         case "account":
           searchBox.placeholder = "Search by Account...";
           break;
+        case "address":
+          searchBox.placeholder = "Search by Address...";
+          break;
         case "all":
-          searchBox.placeholder = "Search (Record / Vertical / Account)...";
+          searchBox.placeholder = "Search (Record / Vertical / Account / Address)...";
           break;
         default:
           searchBox.placeholder = "Search by Record...";
@@ -590,7 +594,7 @@
         // keep q behavior
         if (query) params.set("q", query);
 
-        // ✅ NEW: send chosen field to Lambda
+        // NEW: send chosen field to Lambda
         // Your Lambda must support this param for Vertical/Account searching.
         // Suggestion: read params.field and apply appropriate Query/Scan/Filter.
         params.set("field", searchField);
@@ -643,7 +647,7 @@
 
     let searchTimer = null;
 
-    // ✅ NEW: changing filter triggers a fresh search
+    // NEW: changing filter triggers a fresh search
     document.getElementById("searchFilter").addEventListener("change", (e) => {
       searchField = e.target.value;
       updateSearchPlaceholder();
