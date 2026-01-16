@@ -612,6 +612,22 @@
 
         const payload = await res.json();
 
+        // If the API says "you need at least N chars", show a friendly message
+        if (payload && typeof payload.minChars === "number") {
+          allData = [];
+          nextKey = null;
+
+          // keep totalCount updated if present
+          if (typeof payload.total === "number") totalCount = payload.total;
+
+          document.getElementById("content").innerHTML =
+            `<div class="no-results">Type at least ${payload.minChars} characters to search Full Address.</div>`;
+
+          showLoadMoreButton(false);
+          updateStats(); // will show 0–0 of ~total
+          return;
+        }
+
         const items = Array.isArray(payload.items) ? payload.items : [];
         nextKey = payload.nextKey || null;
 
