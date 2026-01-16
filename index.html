@@ -345,7 +345,7 @@
             <!-- <option value="record" selected>Record</option> -->
             <!-- <option value="vertical">Vertical</option>
             <option value="account">Account</option> -->
-            <option value="full_address">Full Address</option>
+            <option value="full_address"selected>Full Address</option>
             <!-- <option value="all">All fields</option> -->
           </select>
 
@@ -385,7 +385,7 @@
     let totalCount = null;
 
     // selected search field
-    let searchField = "record"; // record | vertical | account | all
+    let searchField = "full_address"; // record | vertical | account | all
 
     // ==============================
     // AUTH (unchanged)
@@ -664,16 +664,16 @@
     let searchTimer = null;
 
     // NEW: changing filter triggers a fresh search
-    document.getElementById("searchFilter").addEventListener("change", (e) => {
-      searchField = e.target.value;
-      updateSearchPlaceholder();
+    // document.getElementById("searchFilter").addEventListener("change", (e) => {
+    //   searchField = e.target.value;
+    //   updateSearchPlaceholder();
 
-      // re-run current search with new filter
-      clearTimeout(searchTimer);
-      searchTimer = setTimeout(() => {
-        fetchPage({ query: lastQuery, reset: true });
-      }, 150);
-    });
+    //   // re-run current search with new filter
+    //   clearTimeout(searchTimer);
+    //   searchTimer = setTimeout(() => {
+    //     fetchPage({ query: lastQuery, reset: true });
+    //   }, 150);
+    // });
 
     document.getElementById("searchBox").addEventListener("input", (e) => {
       lastQuery = e.target.value.trim();
