@@ -540,7 +540,7 @@
         const card = document.createElement("div");
         card.className = "record-card";
 
-        const title = record.bms_location || record.location_name || record.Record || record.record || `Record ${index + 2}`;
+        const title = record.location_name || record.bms_location || record.Record || record.record || `Record ${index + 1}`;
 
         let fieldsHtml = "";
 
