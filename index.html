@@ -342,7 +342,7 @@
         <!-- Filter + Search input row -->
         <div class="search-controls">
           <select id="searchFilter" class="filter-select">
-            <option value="record" selected>Record</option>
+            <!-- <option value="record" selected>Record</option> -->
             <!-- <option value="vertical">Vertical</option>
             <option value="account">Account</option> -->
             <option value="full_address">Full Address</option>
@@ -353,7 +353,7 @@
             type="text"
             id="searchBox"
             class="search-box"
-            placeholder="Search by Record..."
+            placeholder="Search by Full Address..."
           />
         </div>
 
@@ -511,14 +511,14 @@
         // case "account":
         //   searchBox.placeholder = "Search by Account...";
         //   break;
-        case "full_address":
-          searchBox.placeholder = "Search by Full Address (min 2 chars)...";
-          break;
+        // case "full_address":
+        //   searchBox.placeholder = "Search by Full Address (min 2 chars)...";
+        //   break;
         // case "all":
         //   searchBox.placeholder = "Search (Record / Vertical / Account / Address)...";
         //   break;
         default:
-          searchBox.placeholder = "Search by Record...";
+          searchBox.placeholder = "Search by Full Address(min 2 chars)...";
       }
     }
 
