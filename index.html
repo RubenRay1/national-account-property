@@ -522,9 +522,13 @@
       }
     }
 
-    // ==============================
-    // RENDER
-    // ==============================
+    const HIDDEN_FIELDS = new Set([
+      "addr_shard",
+      "full_address_normalized",
+      "Record"
+    ]);
+
+    // Display records in grid
     function displayRecords(records) {
       const content = document.getElementById("content");
 
@@ -545,7 +549,11 @@
         let fieldsHtml = "";
 
         Object.keys(record).forEach(key => {
+
+          if (HIDDEN_FIELDS.has(key)) return;
+
           const value = record[key];
+          
           if (value !== null && value !== undefined && String(value).trim() !== "") {
             const displayValue = Array.isArray(value) ? value.join(", ") : String(value);
             fieldsHtml += `
@@ -594,9 +602,6 @@
         // keep q behavior
         if (query) params.set("q", query);
 
-        // NEW: send chosen field to Lambda
-        // Your Lambda must support this param for Vertical/Account searching.
-        // Suggestion: read params.field and apply appropriate Query/Scan/Filter.
         params.set("field", searchField);
 
         params.set("limit", String(PAGE_SIZE));
