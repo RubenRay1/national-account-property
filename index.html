@@ -35,7 +35,7 @@
       margin-bottom: 1.25rem;
     }
 
-    /* ✅ NEW: search controls row (dropdown + input) */
+    /* search controls row (dropdown + input) */
     .search-controls {
       display: flex;
       gap: 0.75rem;
@@ -369,15 +369,13 @@
   </div>
 
   <script>
-    // ==============================
+
     // CONFIG
-    // ==============================
     const READ_API_BASE_URL = "https://dfj2fof6rlzfdkfuxohmfn3zgi0mygii.lambda-url.us-east-1.on.aws/";
     const PAGE_SIZE = 50;
 
-    // ==============================
+
     // STATE
-    // ==============================
     let allData = [];
     let nextKey = null;
     let lastQuery = "";
@@ -387,9 +385,8 @@
     // selected search field
     let searchField = "full_address"; // record | vertical | account | all
 
-    // ==============================
-    // AUTH (unchanged)
-    // ==============================
+
+    // AUTH
     async function checkAuthState() {
       try {
         const urlParams = new URLSearchParams(window.location.search);
@@ -443,9 +440,7 @@
         "&logout_uri=" + encodeURIComponent(window.location.origin + "/");
     });
 
-    // ==============================
     // UI HELPERS
-    // ==============================
     function renderSkeleton() {
       const content = document.getElementById("content");
       content.innerHTML = `
@@ -553,7 +548,7 @@
           if (HIDDEN_FIELDS.has(key)) return;
 
           const value = record[key];
-          
+
           if (value !== null && value !== undefined && String(value).trim() !== "") {
             const displayValue = Array.isArray(value) ? value.join(", ") : String(value);
             fieldsHtml += `
@@ -582,9 +577,7 @@
       content.appendChild(grid);
     }
 
-    // ==============================
     // API CALL (server-side paging)
-    // ==============================
     async function fetchPage({ query, reset }) {
       if (isLoading) return;
       isLoading = true;
@@ -658,9 +651,8 @@
       }
     }
 
-    // ==============================
+
     // WIRES
-    // ==============================
     function loadFirstPage() {
       lastQuery = "";
       fetchPage({ query: "", reset: true });
