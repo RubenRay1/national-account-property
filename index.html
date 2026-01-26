@@ -77,6 +77,12 @@
       box-shadow: 0 0 0 3px rgba(43,115,181,0.1);
     }
 
+    /* ✅ NEW: wrapper for input + clear button */
+    .search-input-wrap {
+      position: relative;
+      width: 100%;
+    }
+
     .search-box {
       width: 100%;
       padding: 1rem;
@@ -86,10 +92,44 @@
       transition: border-color 0.3s ease;
     }
 
+    /* ✅ NEW: make room for the X button */
+    .search-input-wrap .search-box {
+      padding-right: 2.75rem;
+    }
+
     .search-box:focus {
       outline: none;
       border-color: #2B73B5;
       box-shadow: 0 0 0 3px rgba(43,115,181,0.1);
+    }
+
+    /* ✅ NEW: clear (X) button */
+    .clear-btn {
+      position: absolute;
+      right: 0.85rem;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 32px;
+      height: 32px;
+      border: none;
+      border-radius: 999px;
+      background: transparent;
+      color: #666;
+      font-size: 22px;
+      line-height: 1;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .clear-btn:hover {
+      background: rgba(0, 0, 0, 0.06);
+    }
+
+    .clear-btn:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(43,115,181,0.2);
     }
 
     .stats { text-align:center; color:#666; margin-bottom: 0; font-weight: 500; }
@@ -342,19 +382,28 @@
         <!-- Filter + Search input row -->
         <div class="search-controls">
           <select id="searchFilter" class="filter-select">
-            <!-- <option value="record" selected>Record</option> -->
-            <!-- <option value="vertical">Vertical</option>
-            <option value="account">Account</option> -->
-            <option value="full_address"selected>Full Address</option>
-            <!-- <option value="all">All fields</option> -->
+            <option value="full_address" selected>Full Address</option>
           </select>
 
-          <input
-            type="text"
-            id="searchBox"
-            class="search-box"
-            placeholder="Search by Full Address..."
-          />
+          <!-- ✅ NEW: input wrapper + clear button -->
+          <div class="search-input-wrap">
+            <input
+              type="text"
+              id="searchBox"
+              class="search-box"
+              placeholder="Search by Full Address..."
+              autocomplete="off"
+            />
+            <button
+              type="button"
+              id="clearSearchBtn"
+              class="clear-btn hidden"
+              aria-label="Clear search"
+              title="Clear"
+            >
+              ×
+            </button>
+          </div>
         </div>
 
         <div id="stats" class="stats">Loading data...</div>
@@ -369,11 +418,9 @@
   </div>
 
   <script>
-
     // CONFIG
     const READ_API_BASE_URL = "https://dfj2fof6rlzfdkfuxohmfn3zgi0mygii.lambda-url.us-east-1.on.aws/";
     const PAGE_SIZE = 50;
-
 
     // STATE
     let allData = [];
@@ -384,7 +431,6 @@
 
     // selected search field
     let searchField = "full_address"; // record | vertical | account | all
-
 
     // AUTH
     async function checkAuthState() {
@@ -500,18 +546,6 @@
     function updateSearchPlaceholder() {
       const searchBox = document.getElementById("searchBox");
       switch (searchField) {
-        // case "vertical":
-        //   searchBox.placeholder = "Search by Vertical...";
-        //   break;
-        // case "account":
-        //   searchBox.placeholder = "Search by Account...";
-        //   break;
-        // case "full_address":
-        //   searchBox.placeholder = "Search by Full Address (min 2 chars)...";
-        //   break;
-        // case "all":
-        //   searchBox.placeholder = "Search (Record / Vertical / Account / Address)...";
-        //   break;
         default:
           searchBox.placeholder = "Search by Full Address(min 2 chars)...";
       }
@@ -545,7 +579,6 @@
         let fieldsHtml = "";
 
         Object.keys(record).forEach(key => {
-
           if (HIDDEN_FIELDS.has(key)) return;
 
           const value = record[key];
@@ -652,7 +685,6 @@
       }
     }
 
-
     // WIRES
     function loadFirstPage() {
       lastQuery = "";
@@ -661,19 +693,39 @@
 
     let searchTimer = null;
 
-    // NEW: changing filter triggers a fresh search
-    // document.getElementById("searchFilter").addEventListener("change", (e) => {
-    //   searchField = e.target.value;
-    //   updateSearchPlaceholder();
+    // ✅ NEW: search box + clear button refs & helpers
+    const searchBoxEl = document.getElementById("searchBox");
+    const clearBtnEl = document.getElementById("clearSearchBtn");
 
-    //   // re-run current search with new filter
-    //   clearTimeout(searchTimer);
-    //   searchTimer = setTimeout(() => {
-    //     fetchPage({ query: lastQuery, reset: true });
-    //   }, 150);
-    // });
+    function syncClearButton() {
+      if (searchBoxEl.value && searchBoxEl.value.length > 0) {
+        clearBtnEl.classList.remove("hidden");
+      } else {
+        clearBtnEl.classList.add("hidden");
+      }
+    }
 
-    document.getElementById("searchBox").addEventListener("input", (e) => {
+    clearBtnEl.addEventListener("click", () => {
+      searchBoxEl.value = "";
+      lastQuery = "";
+      syncClearButton();
+      searchBoxEl.focus();
+
+      // Trigger same behavior as typing so your existing debounce/search runs
+      searchBoxEl.dispatchEvent(new Event("input", { bubbles: true }));
+    });
+
+    // Optional: ESC clears
+    searchBoxEl.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        clearBtnEl.click();
+      }
+    });
+
+    // Search input handler (updated to sync X visibility)
+    searchBoxEl.addEventListener("input", (e) => {
+      syncClearButton();
+
       lastQuery = e.target.value.trim();
 
       clearTimeout(searchTimer);
@@ -690,6 +742,7 @@
 
     // INIT
     updateSearchPlaceholder();
+    syncClearButton();
     checkAuthState();
   </script>
 </body>
