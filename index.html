@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-  <title>National Account Property - Secure Portal</title>
+  <title>National Account Protocol - Secure Portal</title>
   <script src="https://unpkg.com/aws-amplify@5.3.12/dist/aws-amplify.min.js"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -35,43 +35,16 @@
       margin-bottom: 1.25rem;
     }
 
-    /* search controls row (dropdown + input) */
-    .search-controls {
-      display: flex;
-      gap: 0.75rem;
-      align-items: center;
-      margin-bottom: 1rem;
-    }
-
-    .filter-select {
-      appearance: none;
-      -webkit-appearance: none;
-      -moz-appearance: none;
-      background: white;
+    .search-box {
+      width: 100%;
+      padding: 1rem;
       border: 2px solid #e1e5e9;
       border-radius: 12px;
-      padding: 1rem 2.5rem 1rem 1rem;
       font-size: 16px;
-      color: #333;
-      cursor: pointer;
-      min-width: 180px;
+      margin-bottom: 1rem;
       transition: border-color 0.3s ease;
-      background-image:
-        linear-gradient(45deg, transparent 50%, #666 50%),
-        linear-gradient(135deg, #666 50%, transparent 50%),
-        linear-gradient(to right, transparent, transparent);
-      background-position:
-        calc(100% - 20px) calc(50% - 3px),
-        calc(100% - 14px) calc(50% - 3px),
-        0 0;
-      background-size:
-        6px 6px,
-        6px 6px,
-        100% 100%;
-      background-repeat: no-repeat;
     }
-
-    .filter-select:focus {
+    .search-box:focus {
       outline: none;
       border-color: #2B73B5;
       box-shadow: 0 0 0 3px rgba(43,115,181,0.1);
@@ -83,31 +56,16 @@
       width: 100%;
     }
 
-    .search-box {
-      width: 100%;
-      padding: 1rem;
-      border: 2px solid #e1e5e9;
-      border-radius: 12px;
-      font-size: 16px;
-      transition: border-color 0.3s ease;
-    }
-
     /* ✅ NEW: make room for the X button */
     .search-input-wrap .search-box {
       padding-right: 2.75rem;
-    }
-
-    .search-box:focus {
-      outline: none;
-      border-color: #2B73B5;
-      box-shadow: 0 0 0 3px rgba(43,115,181,0.1);
     }
 
     /* ✅ NEW: clear (X) button */
     .clear-btn {
       position: absolute;
       right: 0.85rem;
-      top: 50%;
+      top: 41%;
       transform: translateY(-50%);
       width: 32px;
       height: 32px;
@@ -132,7 +90,7 @@
       box-shadow: 0 0 0 3px rgba(43,115,181,0.2);
     }
 
-    .stats { text-align:center; color:#666; margin-bottom: 0; font-weight: 500; }
+    .stats { text-align:center; color:#666; margin-bottom: 1rem; font-weight: 500; }
 
     .loading {
       text-align: center;
@@ -179,17 +137,29 @@
     }
     .record-card.expanded .record-content { padding: 1.5rem; max-height: none; }
 
-    .field-grid { display: grid; gap: 0; }
+    /* ==============================
+       ALIGNMENT FIX (CHANGED)
+       - Make each Q/A pair a "row"
+       - Border goes on the row so it spans both columns
+    ============================== */
+
+    .field-grid {
+      display: grid;
+      gap: 0; /* rows manage spacing */
+    }
 
     .field-row {
       display: grid;
-      grid-template-columns: 1fr 2fr;
+      grid-template-columns: 1fr 2fr;  /* DESKTOP/TABLET default stays the same */
       gap: 0.75rem;
       align-items: start;
       border-bottom: 1px solid #f0f0f0;
       padding: 0.75rem 0;
     }
-    .field-row:last-child { border-bottom: none; }
+
+    .field-row:last-child {
+      border-bottom: none;
+    }
 
     .field-label {
       font-weight: 600;
@@ -203,42 +173,50 @@
       padding: 0;
       border-bottom: none;
       line-height: 1.5;
-      white-space: pre-wrap;
-      word-break: normal;
-      overflow-wrap: anywhere;
+      white-space: pre-wrap; /* keeps newlines readable */
+
+      /* ✅ Fix ugly mid-word breaks on mobile Safari / narrow columns */
+      word-break: normal;        /* do NOT split words mid-word by default */
+      overflow-wrap: anywhere;   /* still prevents overflow for long strings/URLs */
       hyphens: auto;
     }
 
+    /* ==============================
+       MOBILE-ONLY LAYOUT (NEW)
+       - Stack label above value
+       - Tighten spacing
+       - Prevent the "every word on a new line" look
+       - DOES NOT AFFECT DESKTOP
+    ============================== */
     @media (max-width: 768px) {
       .container { padding: 1rem; }
       .search-section { padding: 1.25rem; }
-
-      /* ✅ NEW: stack filter + input on mobile */
-      .search-controls {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 0.6rem;
-      }
-      .filter-select {
-        min-width: unset;
-        width: 100%;
-      }
 
       .record-header {
         padding: 1rem;
         font-size: 1.05rem;
       }
 
-      .record-card.expanded .record-content { padding: 1rem; }
+      .record-card.expanded .record-content {
+        padding: 1rem;
+      }
 
       .field-row {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr; /* ✅ stack */
         gap: 0.35rem;
         padding: 0.9rem 0;
       }
 
-      .field-label { font-size: 0.95rem; line-height: 1.25; }
-      .field-value { font-size: 1rem; line-height: 1.45; color: #444; }
+      .field-label {
+        font-size: 0.95rem;
+        line-height: 1.25;
+      }
+
+      .field-value {
+        font-size: 1rem;
+        line-height: 1.45;
+        color: #444;
+      }
     }
 
     .no-results {
@@ -360,7 +338,7 @@
 <body>
   <div id="authScreen" class="auth-container">
     <div class="auth-card">
-      <h1>National Account Property <span class="bms-badge">BMS</span></h1>
+      <h1>National Account Protocol <span class="bms-badge">BMS</span></h1>
       <p style="margin: 1rem 0; color: #666;">Secure access to customer data</p>
       <button id="loginBtn" class="auth-button">Sign In with OKTA</button>
     </div>
@@ -372,38 +350,30 @@
         <span id="userEmail">Loading...</span>
         <button id="logoutBtn" class="logout-btn">Sign Out</button>
       </div>
-      <h1> National Account Property <span class="bms-badge">BMS CAT</span></h1>
-      <p>National Account Property Search Portal</p>
+      <h1> National Account Protocol <span class="bms-badge">BMS CAT</span></h1>
+      <p>National Account Protocol Search Portal</p>
     </div>
 
     <div class="container">
       <div class="search-section">
-
-        <!-- Filter + Search input row -->
-        <div class="search-controls">
-          <select id="searchFilter" class="filter-select">
-            <option value="full_address" selected>Full Address</option>
-          </select>
-
-          <!-- ✅ NEW: input wrapper + clear button -->
-          <div class="search-input-wrap">
-            <input
-              type="text"
-              id="searchBox"
-              class="search-box"
-              placeholder="Search by Full Address..."
-              autocomplete="off"
-            />
-            <button
-              type="button"
-              id="clearSearchBtn"
-              class="clear-btn hidden"
-              aria-label="Clear search"
-              title="Clear"
-            >
-              ×
-            </button>
-          </div>
+        <!-- ✅ NEW: input wrapper + clear button -->
+        <div class="search-input-wrap">
+          <input
+            type="text"
+            id="searchBox"
+            class="search-box"
+            placeholder="Search (Company)..."
+            autocomplete="off"
+          />
+          <button
+            type="button"
+            id="clearSearchBtn"
+            class="clear-btn hidden"
+            aria-label="Clear search"
+            title="Clear"
+          >
+            ×
+          </button>
         </div>
 
         <div id="stats" class="stats">Loading data...</div>
@@ -422,17 +392,75 @@
     const READ_API_BASE_URL = "https://dfj2fof6rlzfdkfuxohmfn3zgi0mygii.lambda-url.us-east-1.on.aws/";
     const PAGE_SIZE = 50;
 
+    // ✅ EXACT Excel column order (left → right), rendered top → bottom in the app
+    const FIELD_ORDER = [
+      "Company (Full Legal Name)",
+      "Industry",
+      "Customer Corporate Office Address",
+      "Customer Contacts",
+      "BMS Cat Account Manager",
+      "Agreement Type\n(RSA, MSA, Handshake)",
+      "Brands",
+      "Local Marketing Direction",
+      "Pricing/Rate Schedule\n***YOU MUST SPECIFY THE YEAR AS THERE ARE DIFFERENT RATE SCHEDULES WITH THE SAME NAME, BUT DIFFERENT YEAR!",
+      "Rebate/Discount/Fee & General Agreement Details",
+      "Reason Why Customer is not under Preferred 2024 Rate Schedule (If Customer is currently under Preferred 2024 Rate Schedule, list \"N/A\")",
+      "National Adjuster",
+      "Chase Instructions",
+      "Key Differences",
+      "WHO should the Project Updates be sent to?",
+      "WHAT should be included in the Project Updates?",
+      "WHEN should the Project Updates be sent?",
+      "WHERE should the Project Updates be sent?",
+      "WHO should provide the Work Authorization?",
+      "WHAT type of Work Authorization should be obtained?",
+      "WHEN should the Work Authorization be obtained?",
+      "WHERE should the Work Authorization be sent?",
+      "WHO should the Scope of Work/Estimate be sent to?",
+      "WHAT should be included in the Scope of Work/Estimate?",
+      "WHEN should the Scope of Work/Estimate be sent?",
+      "WHERE should the Scope of Work/Estimate be sent?",
+      "WHO should sign our SOWC/COC/Work Complete Form?",
+      "WHAT type of SOWC/COC/Work Complete Form should be obtained?",
+      "WHEN should the SOWC/COC/Work Complete Form be obtained?",
+      "WHERE should the SOWC/COC/Work Complete Form be sent?",
+      "WHO should create the Invoice Packet?",
+      "WHAT should be included when the Invoice Packet is created?",
+      "WHEN should the Invoice Packet be created?",
+      "WHERE should the Invoice Packet be sent once it's created?",
+      "WHO should send the completed Invoice Packet to the Customer?",
+      "WHAT should be included with the completed Invoice Packet to the Customer?",
+      "WHEN should the completed Invoice Packet be sent to the Customer?",
+      "WHERE should the completed Invoice Packet be sent?",
+      "Payment Terms",
+      "WHO should attempt initial collection?",
+      "WHAT should be sent to attempt initial collection?",
+      "WHEN should the initial collection take place?",
+      "WHERE should the initial collection be directed to?",
+      "WHO should attempt secondary collection?",
+      "WHAT should be sent to attempt secondary collection?",
+      "WHEN should the secondary collection take place?",
+      "WHERE should the secondary collection be directed to?",
+      "WHO should attempt final collection?",
+      "WHAT should be sent to attempt final collection?",
+      "WHEN should the final collection take place?",
+      "WHERE should the final collection be directed to?",
+      "Specific Account Protocols"
+    ];
+
+    // ==============================
     // STATE
+    // ==============================
     let allData = [];
     let nextKey = null;
     let lastQuery = "";
     let isLoading = false;
     let totalCount = null;
+    let matchedTotal = null;
 
-    // selected search field
-    let searchField = "full_address"; // record | vertical | account | all
-
-    // AUTH
+    // ==============================
+    // AUTH (unchanged)
+    // ==============================
     async function checkAuthState() {
       try {
         const urlParams = new URLSearchParams(window.location.search);
@@ -486,7 +514,35 @@
         "&logout_uri=" + encodeURIComponent(window.location.origin + "/");
     });
 
-    // UI HELPERS
+    // ==============================
+    // HELPERS
+    // ==============================
+
+    function normalizeKey(s) {
+      return String(s ?? "")
+        .replace(/\r\n/g, "\n")
+        .replace(/\s+/g, " ")
+        .replace(/\s*\n\s*/g, "\n")
+        .trim();
+    }
+
+    function buildKeyMap(record) {
+      const map = new Map();
+      Object.keys(record || {}).forEach(k => {
+        map.set(normalizeKey(k), k);
+      });
+      return map;
+    }
+
+    function getCompanyTitle(record) {
+      return (
+        record.Company ||
+        record.company ||
+        record["Company (Full Legal Name)"] ||
+        "Company"
+      );
+    }
+
     function renderSkeleton() {
       const content = document.getElementById("content");
       content.innerHTML = `
@@ -518,6 +574,13 @@
       const stats = document.getElementById("stats");
       const loaded = allData.length;
 
+      if (lastQuery && typeof matchedTotal === "number") {
+        const start = loaded > 0 ? 1 : 0;
+        const end = loaded;
+        stats.textContent = `Showing ${start}–${end} of ${matchedTotal} matches`;
+        return;
+      }
+
       if (typeof totalCount === "number") {
         const start = loaded > 0 ? 1 : 0;
         const end = loaded;
@@ -531,10 +594,8 @@
       updateStatsRange();
     }
 
-    function formatFieldName(key) {
-      return key.replace(/_/g, " ")
-        .replace(/\b\w/g, l => l.toUpperCase())
-        .replace(/unnamed/gi, "Field");
+    function prettyLabel(label) {
+      return normalizeKey(label);
     }
 
     function toggleCard(header) {
@@ -542,23 +603,9 @@
       card.classList.toggle("expanded");
     }
 
-    // NEW: update placeholder text based on filter
-    function updateSearchPlaceholder() {
-      const searchBox = document.getElementById("searchBox");
-      switch (searchField) {
-        default:
-          searchBox.placeholder = "Search by Full Address(min 2 chars)...";
-      }
-    }
-
-    const HIDDEN_FIELDS = new Set([
-      "addr_shard",
-      "full_address_normalized",
-      "address",
-      "Record"
-    ]);
-
-    // Display records in grid
+    // ==============================
+    // RENDER
+    // ==============================
     function displayRecords(records) {
       const content = document.getElementById("content");
 
@@ -567,31 +614,55 @@
         return;
       }
 
+      records = [...records].sort((a, b) =>
+        String(getCompanyTitle(a)).localeCompare(String(getCompanyTitle(b)))
+      );
+
       const grid = document.createElement("div");
       grid.className = "records-grid";
 
-      records.forEach((record, index) => {
+      records.forEach((record) => {
         const card = document.createElement("div");
         card.className = "record-card";
 
-        const title = record.location_name || record.account || `Record ${index + 1}`;
+        const title = getCompanyTitle(record);
+        const keyMap = buildKeyMap(record);
+
+        const excludedNormalizedKeys = new Set([
+          normalizeKey("Company"),
+          normalizeKey("company")
+        ]);
 
         let fieldsHtml = "";
 
-        Object.keys(record).forEach(key => {
-          if (HIDDEN_FIELDS.has(key)) return;
+        FIELD_ORDER.forEach(label => {
+          const normalizedLabel = normalizeKey(label);
+          const originalKey = keyMap.get(normalizedLabel);
 
-          const value = record[key];
+          if (!originalKey) return;
+          if (excludedNormalizedKeys.has(normalizedLabel)) return;
 
-          if (value !== null && value !== undefined && String(value).trim() !== "") {
-            const displayValue = Array.isArray(value) ? value.join(", ") : String(value);
-            fieldsHtml += `
-              <div class="field-row">
-                <div class="field-label">${formatFieldName(key)}</div>
-                <div class="field-value">${displayValue}</div>
-              </div>
-            `;
+          const value = record[originalKey];
+          if (value === null || value === undefined) return;
+
+          const str = Array.isArray(value) ? value.join(", ") : String(value);
+          const normalizedValue = str.trim().toLowerCase();
+
+          if (
+            normalizedValue === "" ||
+            normalizedValue === "n/a" ||
+            normalizedValue === "na" ||
+            normalizedValue === "n//a"
+          ) {
+            return;
           }
+
+          fieldsHtml += `
+            <div class="field-row">
+              <div class="field-label">${prettyLabel(label)}</div>
+              <div class="field-value">${str}</div>
+            </div>
+          `;
         });
 
         card.innerHTML = `
@@ -611,7 +682,9 @@
       content.appendChild(grid);
     }
 
+    // ==============================
     // API CALL (server-side paging)
+    // ==============================
     async function fetchPage({ query, reset }) {
       if (isLoading) return;
       isLoading = true;
@@ -620,17 +693,13 @@
         if (reset) {
           allData = [];
           nextKey = null;
+          matchedTotal = null;
           showLoadMoreButton(false);
           renderSkeleton();
         }
 
         const params = new URLSearchParams();
-
-        // keep q behavior
         if (query) params.set("q", query);
-
-        params.set("field", searchField);
-
         params.set("limit", String(PAGE_SIZE));
         if (nextKey) params.set("lastKey", JSON.stringify(nextKey));
 
@@ -643,22 +712,7 @@
         }
 
         const payload = await res.json();
-
-        // If the API says "you need at least N chars", show a friendly message
-        if (payload && typeof payload.minChars === "number") {
-          allData = [];
-          nextKey = null;
-
-          // keep totalCount updated if present
-          if (typeof payload.total === "number") totalCount = payload.total;
-
-          document.getElementById("content").innerHTML =
-            `<div class="no-results">Type at least ${payload.minChars} characters to search Full Address.</div>`;
-
-          showLoadMoreButton(false);
-          updateStats(); // will show 0–0 of ~total
-          return;
-        }
+        matchedTotal = (typeof payload.matchedTotal === "number") ? payload.matchedTotal : null;
 
         const items = Array.isArray(payload.items) ? payload.items : [];
         nextKey = payload.nextKey || null;
@@ -685,7 +739,9 @@
       }
     }
 
+    // ==============================
     // WIRES
+    // ==============================
     function loadFirstPage() {
       lastQuery = "";
       fetchPage({ query: "", reset: true });
@@ -740,10 +796,11 @@
       fetchPage({ query: lastQuery, reset: false });
     });
 
-    // INIT
-    updateSearchPlaceholder();
+    // ✅ initialize visibility on load
     syncClearButton();
+
     checkAuthState();
   </script>
 </body>
 </html>
+
