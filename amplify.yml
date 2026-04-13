@@ -7,5 +7,4 @@ frontend:
   artifacts:
     baseDirectory: /
     files:
-      - index.html
-      - auth-config.js
+      - '**/*'
