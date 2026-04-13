@@ -8,163 +8,173 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, 'Helvetica Neue', sans-serif;
-      background: #0c1a2e;
-      background: linear-gradient(170deg, #0c1a2e 0%, #14365e 35%, #1b5590 70%, #2470b0 100%);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0f2b4a;
+      background: linear-gradient(160deg, #0f2b4a 0%, #1a4a7a 40%, #2563a0 100%);
       background-attachment: fixed;
-      color: #2d3748;
+      color: #333;
       min-height: 100vh;
-      -webkit-font-smoothing: antialiased;
     }
 
+    /* ==============================
+       HEADER
+    ============================== */
     .header {
-      background: rgba(0,0,0,0.18);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
+      background: rgba(255,255,255,0.06);
+      backdrop-filter: blur(12px);
       color: white;
-      padding: 1.25rem 1.5rem 1.4rem;
+      padding: 1.5rem 1rem;
       text-align: center;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
     }
     .header h1 {
-      font-size: 1.55rem;
-      margin-bottom: 0.15rem;
+      font-size: 1.75rem;
+      margin-bottom: 0.25rem;
       font-weight: 700;
-      letter-spacing: -0.03em;
+      letter-spacing: -0.02em;
     }
     .header p {
-      font-size: 0.82rem;
-      opacity: 0.55;
+      font-size: 0.95rem;
+      opacity: 0.8;
       font-weight: 400;
-      letter-spacing: 0.02em;
     }
 
+    /* ==============================
+       CONTAINER
+    ============================== */
     .container {
-      max-width: 860px;
+      max-width: 960px;
       margin: 0 auto;
-      padding: 1.25rem 1.5rem;
+      padding: 1.5rem;
     }
 
-    /* TAB BAR */
+    /* ==============================
+       TAB BAR
+    ============================== */
     .tab-bar {
       display: flex;
-      margin-bottom: 0.75rem;
-      background: rgba(255,255,255,0.08);
-      border-radius: 11px;
-      padding: 3px;
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255,255,255,0.06);
+      gap: 0;
+      margin-bottom: 1rem;
+      background: rgba(255,255,255,0.12);
+      border-radius: 14px;
+      padding: 5px;
+      backdrop-filter: blur(12px);
     }
     .tab-btn {
       flex: 1;
-      padding: 0.6rem 0.7rem;
+      padding: 0.7rem 0.75rem;
       border: none;
-      border-radius: 9px;
+      border-radius: 10px;
       background: transparent;
-      color: rgba(255,255,255,0.55);
-      font-size: 0.8rem;
+      color: rgba(255,255,255,0.7);
+      font-size: 0.88rem;
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.18s ease;
+      transition: all 0.2s ease;
       text-align: center;
-      line-height: 1.35;
+      line-height: 1.3;
+      /* Allow text to wrap on mobile instead of truncating */
       white-space: normal;
       word-break: break-word;
     }
     .tab-btn:hover {
-      color: rgba(255,255,255,0.85);
-      background: rgba(255,255,255,0.06);
+      color: white;
+      background: rgba(255,255,255,0.08);
     }
     .tab-btn.active {
       background: white;
-      color: #14365e;
-      box-shadow: 0 1px 6px rgba(0,0,0,0.1);
-      font-weight: 700;
+      color: #1a4a7a;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.12);
     }
 
-    /* SEARCH */
+    /* ==============================
+       SEARCH SECTION
+    ============================== */
     .search-section {
       background: white;
-      padding: 1rem 1.15rem;
-      border-radius: 11px;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.03), 0 4px 14px rgba(0,0,0,0.05);
-      margin-bottom: 0.75rem;
+      padding: 1.25rem;
+      border-radius: 14px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      margin-bottom: 1rem;
     }
-    .search-input-wrap { position: relative; width: 100%; }
+    .search-input-wrap {
+      position: relative;
+      width: 100%;
+    }
     .search-box {
       width: 100%;
-      padding: 0.65rem 0.85rem;
-      padding-right: 2.4rem;
-      border: 1.5px solid #e2e8f0;
-      border-radius: 8px;
-      font-size: 14px;
-      margin-bottom: 0.5rem;
-      transition: border-color 0.15s ease, box-shadow 0.15s ease;
-      background: #f7f8fa;
-      color: #2d3748;
+      padding: 0.85rem 1rem;
+      padding-right: 2.75rem;
+      border: 2px solid #e8ecf0;
+      border-radius: 10px;
+      font-size: 15px;
+      margin-bottom: 0.75rem;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      background: #f8f9fb;
+      color: #333;
     }
     .search-box:focus {
       outline: none;
-      border-color: #2470b0;
-      box-shadow: 0 0 0 3px rgba(36,112,176,0.08);
+      border-color: #2563a0;
+      box-shadow: 0 0 0 3px rgba(37,99,160,0.1);
       background: white;
     }
-    .search-box::placeholder { color: #a0aec0; font-size: 13px; }
+    .search-box::placeholder { color: #999; }
 
     .clear-btn {
       position: absolute;
-      right: 0.55rem;
-      top: 34%;
+      right: 0.75rem;
+      top: 38%;
       transform: translateY(-50%);
-      width: 22px;
-      height: 22px;
+      width: 28px;
+      height: 28px;
       border: none;
       border-radius: 999px;
       background: transparent;
-      color: #a0aec0;
-      font-size: 16px;
+      color: #999;
+      font-size: 20px;
       line-height: 1;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      transition: all 0.1s ease;
+      transition: background 0.15s ease;
     }
-    .clear-btn:hover { background: #edf2f7; color: #718096; }
-    .clear-btn:focus { outline: none; box-shadow: 0 0 0 2px rgba(36,112,176,0.12); }
+    .clear-btn:hover { background: rgba(0,0,0,0.06); color: #666; }
+    .clear-btn:focus { outline: none; box-shadow: 0 0 0 3px rgba(37,99,160,0.15); }
 
     .stats {
       text-align: center;
-      color: #a0aec0;
-      font-size: 0.75rem;
+      color: #888;
+      font-size: 0.85rem;
       font-weight: 500;
-      letter-spacing: 0.015em;
     }
 
-    /* LOADING / SKELETON */
+    /* ==============================
+       LOADING / SKELETON
+    ============================== */
     .loading {
       text-align: center;
-      padding: 2.5rem;
-      color: #a0aec0;
+      padding: 3rem;
+      color: #888;
       background: white;
-      border-radius: 11px;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.03), 0 4px 14px rgba(0,0,0,0.05);
-      font-size: 0.85rem;
+      border-radius: 14px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      font-size: 0.95rem;
     }
     .skeleton-card {
       background: white;
-      border-radius: 10px;
-      padding: 1rem;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+      border-radius: 14px;
+      padding: 1.25rem;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
     }
     .sk-line {
-      height: 10px;
-      border-radius: 5px;
-      margin: 8px 0;
-      background: linear-gradient(90deg, #edf2f7, #f7fafc, #edf2f7);
+      height: 12px;
+      border-radius: 6px;
+      margin: 10px 0;
+      background: linear-gradient(90deg, #f0f0f0, #f8f8f8, #f0f0f0);
       background-size: 200% 100%;
-      animation: shimmer 1.4s ease infinite;
+      animation: shimmer 1.2s infinite;
     }
     .sk-line.w40 { width: 40%; }
     .sk-line.w60 { width: 60%; }
@@ -174,205 +184,236 @@
       100% { background-position: -200% 0; }
     }
 
-    /* RECORD CARDS */
-    .records-grid { display: grid; gap: 0.45rem; }
+    /* ==============================
+       RECORD CARDS
+    ============================== */
+    .records-grid { display: grid; gap: 0.75rem; }
 
     .record-card {
       background: white;
-      border-radius: 10px;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.03), 0 1px 6px rgba(0,0,0,0.03);
+      border-radius: 14px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
       overflow: hidden;
-      transition: box-shadow 0.15s ease, transform 0.15s ease;
+      transition: box-shadow 0.2s ease, transform 0.2s ease;
       cursor: pointer;
     }
     .record-card:hover {
-      box-shadow: 0 3px 12px rgba(0,0,0,0.07);
+      box-shadow: 0 6px 24px rgba(0,0,0,0.1);
       transform: translateY(-1px);
     }
 
     .record-header {
-      background: linear-gradient(135deg, #14365e 0%, #1b5590 50%, #2470b0 100%);
+      background: linear-gradient(135deg, #1a4a7a 0%, #2563a0 100%);
       color: white;
-      padding: 0.8rem 1rem;
+      padding: 1rem 1.25rem;
       font-weight: 600;
-      font-size: 0.88rem;
+      font-size: 1rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 0.5rem;
-      letter-spacing: 0.005em;
     }
-    .record-header-title { flex: 1; min-width: 0; }
+    .record-header-title {
+      flex: 1;
+      min-width: 0;
+    }
 
     .expand-icon {
-      font-size: 0.95rem;
-      transition: transform 0.2s ease;
+      font-size: 1.2rem;
+      transition: transform 0.25s ease;
       flex-shrink: 0;
-      opacity: 0.6;
+      opacity: 0.8;
     }
-    .record-card.expanded .expand-icon { transform: rotate(180deg); opacity: 1; }
+    .record-card.expanded .expand-icon { transform: rotate(180deg); }
 
     .record-content {
       padding: 0;
       max-height: 0;
       overflow: hidden;
-      transition: all 0.25s ease;
+      transition: all 0.3s ease;
     }
     .record-card.expanded .record-content {
-      padding: 1rem 1.15rem;
+      padding: 1.25rem;
       max-height: none;
     }
 
-    /* FIELD GRID */
+    /* ==============================
+       FIELD GRID (inside expanded card)
+    ============================== */
     .field-grid { display: grid; gap: 0; }
+
     .field-row {
       display: grid;
-      grid-template-columns: 1fr 2.5fr;
-      gap: 0.65rem;
-      align-items: baseline;
-      border-bottom: 1px solid #f0f3f7;
-      padding: 0.55rem 0;
+      grid-template-columns: 1fr 2fr;
+      gap: 0.75rem;
+      align-items: start;
+      border-bottom: 1px solid #f0f2f5;
+      padding: 0.7rem 0;
     }
     .field-row:last-child { border-bottom: none; }
+
     .field-label {
       font-weight: 600;
-      color: #14365e;
-      font-size: 0.74rem;
-      line-height: 1.45;
-      letter-spacing: 0.01em;
+      color: #1a4a7a;
+      font-size: 0.82rem;
+      text-transform: none;
+      line-height: 1.4;
     }
     .field-value {
-      line-height: 1.55;
+      line-height: 1.5;
       white-space: pre-wrap;
       word-break: normal;
       overflow-wrap: anywhere;
       hyphens: auto;
-      color: #4a5568;
-      font-size: 0.84rem;
+      color: #444;
+      font-size: 0.9rem;
     }
 
-    /* MOBILE */
+    /* ==============================
+       MOBILE LAYOUT
+    ============================== */
     @media (max-width: 768px) {
-      .header { padding: 1rem 0.75rem 1.1rem; }
-      .header h1 { font-size: 1.2rem; }
-      .header p { font-size: 0.75rem; }
-      .container { padding: 0.6rem; }
-      .tab-bar { border-radius: 9px; padding: 3px; }
-      .tab-btn { font-size: 0.72rem; padding: 0.5rem 0.35rem; border-radius: 7px; }
-      .search-section { padding: 0.75rem; border-radius: 9px; }
-      .search-box { padding: 0.6rem 0.7rem; padding-right: 2.1rem; font-size: 14px; border-radius: 7px; }
-      .records-grid { gap: 0.35rem; }
-      .record-card { border-radius: 9px; }
-      .record-header { padding: 0.7rem 0.85rem; font-size: 0.85rem; }
-      .record-card.expanded .record-content { padding: 0.8rem; }
-      .field-row { grid-template-columns: 1fr; gap: 0.12rem; padding: 0.55rem 0; }
-      .field-label { font-size: 0.78rem; color: #1b5590; }
-      .field-value { font-size: 0.85rem; line-height: 1.5; color: #4a5568; }
+      .header { padding: 1.25rem 1rem; }
+      .header h1 { font-size: 1.35rem; }
+      .header p { font-size: 0.85rem; }
+
+      .container { padding: 0.75rem; }
+
+      .tab-btn {
+        font-size: 0.78rem;
+        padding: 0.6rem 0.5rem;
+      }
+
+      .search-section { padding: 1rem; }
+      .search-box { padding: 0.75rem 0.85rem; padding-right: 2.5rem; font-size: 14px; }
+
+      .record-header {
+        padding: 0.85rem 1rem;
+        font-size: 0.95rem;
+      }
+      .record-card.expanded .record-content { padding: 1rem; }
+
+      .field-row {
+        grid-template-columns: 1fr;
+        gap: 0.25rem;
+        padding: 0.75rem 0;
+      }
+      .field-label {
+        font-size: 0.85rem;
+        line-height: 1.3;
+      }
+      .field-value {
+        font-size: 0.9rem;
+        line-height: 1.45;
+        color: #555;
+      }
     }
 
-    /* MISC */
+    /* ==============================
+       MISC
+    ============================== */
     .no-results {
       text-align: center;
-      padding: 2.5rem;
-      color: #a0aec0;
+      padding: 3rem;
+      color: #888;
       background: white;
-      border-radius: 11px;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.03), 0 4px 14px rgba(0,0,0,0.05);
-      font-size: 0.85rem;
+      border-radius: 14px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      font-size: 0.95rem;
     }
-    .load-more-wrap { display: flex; justify-content: center; margin: 0.75rem 0 2rem 0; }
+
+    .load-more-wrap { display: flex; justify-content: center; margin: 1rem 0 2rem 0; }
     .load-more-btn {
-      background: linear-gradient(135deg, #d96a0a 0%, #F47920 100%);
+      background: #F47920;
       color: white;
       border: none;
-      padding: 0.6rem 1.6rem;
-      border-radius: 8px;
+      padding: 0.75rem 1.5rem;
+      border-radius: 10px;
       cursor: pointer;
-      font-size: 0.8rem;
+      font-size: 0.9rem;
       font-weight: 700;
-      letter-spacing: 0.01em;
-      transition: transform 0.1s ease, box-shadow 0.1s ease;
-      box-shadow: 0 2px 6px rgba(244,121,32,0.2);
+      transition: transform 0.15s ease, opacity 0.15s ease;
     }
-    .load-more-btn:hover { transform: translateY(-1px); box-shadow: 0 3px 10px rgba(244,121,32,0.25); }
-    .load-more-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
+    .load-more-btn:hover { transform: translateY(-1px); }
+    .load-more-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
     .bms-badge {
       display: inline-block;
-      background: linear-gradient(135deg, #d96a0a 0%, #F47920 100%);
+      background: #F47920;
       color: white;
-      padding: 0.12rem 0.5rem;
+      padding: 0.2rem 0.6rem;
       border-radius: 20px;
-      font-size: 0.55rem;
+      font-size: 0.65rem;
       font-weight: 700;
-      margin-left: 0.4rem;
+      margin-left: 0.5rem;
       vertical-align: middle;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
+      letter-spacing: 0.03em;
     }
 
-    /* AUTH */
+    /* ==============================
+       AUTH
+    ============================== */
     .auth-container {
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      background: linear-gradient(170deg, #0c1a2e 0%, #14365e 35%, #1b5590 70%, #2470b0 100%);
+      background: linear-gradient(160deg, #0f2b4a 0%, #1a4a7a 40%, #2563a0 100%);
     }
     .auth-card {
       background: white;
-      padding: 2.25rem 1.75rem;
-      border-radius: 14px;
-      box-shadow: 0 8px 28px rgba(0,0,0,0.16), 0 2px 6px rgba(0,0,0,0.06);
+      padding: 2.5rem;
+      border-radius: 16px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.15);
       text-align: center;
-      max-width: 350px;
+      max-width: 380px;
       width: 90%;
     }
-    .auth-card h1 { color: #14365e; font-size: 1.3rem; font-weight: 700; }
+    .auth-card h1 { color: #1a4a7a; font-size: 1.5rem; }
     .auth-button {
-      background: linear-gradient(135deg, #14365e 0%, #1b5590 50%, #2470b0 100%);
+      background: linear-gradient(135deg, #1a4a7a 0%, #2563a0 100%);
       color: white;
       border: none;
-      padding: 0.75rem 1.25rem;
-      border-radius: 8px;
-      font-size: 0.92rem;
+      padding: 0.85rem 1.5rem;
+      border-radius: 10px;
+      font-size: 1rem;
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.15s ease;
+      transition: all 0.2s ease;
       width: 100%;
       margin-top: 1rem;
-      box-shadow: 0 2px 6px rgba(20,54,94,0.18);
     }
     .auth-button:hover {
       transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(20,54,94,0.25);
+      box-shadow: 0 6px 16px rgba(26,74,122,0.3);
     }
+
     .user-info {
-      background: rgba(255,255,255,0.05);
+      background: rgba(255,255,255,0.08);
       color: white;
-      padding: 0.45rem 0.85rem;
-      border-radius: 7px;
-      margin-bottom: 0.5rem;
+      padding: 0.6rem 1rem;
+      border-radius: 10px;
+      margin-bottom: 0.75rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 0.75rem;
-      max-width: 860px;
+      font-size: 0.85rem;
+      max-width: 960px;
       margin-left: auto;
       margin-right: auto;
-      opacity: 0.7;
     }
     .logout-btn {
       background: #F47920;
       color: white;
       border: none;
-      padding: 0.3rem 0.6rem;
-      border-radius: 5px;
+      padding: 0.4rem 0.75rem;
+      border-radius: 6px;
       cursor: pointer;
-      font-size: 0.7rem;
+      font-size: 0.8rem;
       font-weight: 600;
     }
     #logoutBtn { display: none !important; }
+
     .hidden { display: none; }
   </style>
 </head>
@@ -402,10 +443,26 @@
       </div>
 
       <div class="search-section">
+        <!-- ✅ NEW: input wrapper + clear button -->
         <div class="search-input-wrap">
-          <input type="text" id="searchBox" class="search-box" placeholder="Search (Company)..." autocomplete="off" />
-          <button type="button" id="clearSearchBtn" class="clear-btn hidden" aria-label="Clear search" title="Clear">×</button>
+          <input
+            type="text"
+            id="searchBox"
+            class="search-box"
+            placeholder="Search (Company)..."
+            autocomplete="off"
+          />
+          <button
+            type="button"
+            id="clearSearchBtn"
+            class="clear-btn hidden"
+            aria-label="Clear search"
+            title="Clear"
+          >
+            ×
+          </button>
         </div>
+
         <div id="stats" class="stats">Loading data...</div>
       </div>
 
@@ -418,10 +475,16 @@
   </div>
 
   <script>
+    // CONFIG
     const READ_API_BASE_URL = "https://dfj2fof6rlzfdkfuxohmfn3zgi0mygii.lambda-url.us-east-1.on.aws/";
     const PAGE_SIZE = 50;
+
+    // Column order — loaded dynamically from the API per sheet
     let FIELD_ORDER = [];
 
+    // ==============================
+    // STATE
+    // ==============================
     let allData = [];
     let nextKey = null;
     let lastQuery = "";
@@ -430,10 +493,14 @@
     let matchedTotal = null;
     let activeSheet = "National Account Protocols";
 
+    // ==============================
+    // AUTH (unchanged)
+    // ==============================
     async function checkAuthState() {
       try {
         const urlParams = new URLSearchParams(window.location.search);
         const code = urlParams.get("code");
+
         if (code) {
           showMainApp();
           document.getElementById("userEmail").textContent = "Authenticated User";
@@ -447,7 +514,9 @@
             showAuthScreen();
           }
         }
-      } catch (e) { showAuthScreen(); }
+      } catch (e) {
+        showAuthScreen();
+      }
     }
 
     function showAuthScreen() {
@@ -480,29 +549,54 @@
         "&logout_uri=" + encodeURIComponent(window.location.origin + "/");
     });
 
+    // ==============================
+    // HELPERS
+    // ==============================
+
     function normalizeKey(s) {
-      return String(s ?? "").replace(/\r\n/g, "\n").replace(/\s+/g, " ").replace(/\s*\n\s*/g, "\n").trim();
+      return String(s ?? "")
+        .replace(/\r\n/g, "\n")
+        .replace(/\s+/g, " ")
+        .replace(/\s*\n\s*/g, "\n")
+        .trim();
     }
 
     function buildKeyMap(record) {
       const map = new Map();
-      Object.keys(record || {}).forEach(k => { map.set(normalizeKey(k), k); });
+      Object.keys(record || {}).forEach(k => {
+        map.set(normalizeKey(k), k);
+      });
       return map;
     }
 
     function getCompanyTitle(record) {
-      return record.Company || record.company || record["Company (Full Legal Name)"] || "Company";
+      return (
+        record.Company ||
+        record.company ||
+        record["Company (Full Legal Name)"] ||
+        "Company"
+      );
     }
 
     function renderSkeleton() {
       const content = document.getElementById("content");
-      content.innerHTML = `<div class="records-grid">${Array.from({ length: 6 }).map(() => `
-        <div class="skeleton-card"><div class="sk-line w60"></div><div class="sk-line w80"></div><div class="sk-line w40"></div></div>`).join("")}</div>`;
+      content.innerHTML = `
+        <div class="records-grid">
+          ${Array.from({ length: 6 }).map(() => `
+            <div class="skeleton-card">
+              <div class="sk-line w60"></div>
+              <div class="sk-line w80"></div>
+              <div class="sk-line w40"></div>
+            </div>
+          `).join("")}
+        </div>
+      `;
     }
 
     function showLoadMoreButton(show) {
       const btn = document.getElementById("loadMoreBtn");
-      if (show) btn.classList.remove("hidden"); else btn.classList.add("hidden");
+      if (show) btn.classList.remove("hidden");
+      else btn.classList.add("hidden");
     }
 
     function setLoadMoreLoading(loading) {
@@ -514,41 +608,71 @@
     function updateStatsRange() {
       const stats = document.getElementById("stats");
       const loaded = allData.length;
+
       if (lastQuery && typeof matchedTotal === "number") {
-        stats.textContent = `Showing ${loaded > 0 ? 1 : 0}–${loaded} of ${matchedTotal} matches`;
+        const start = loaded > 0 ? 1 : 0;
+        const end = loaded;
+        stats.textContent = `Showing ${start}–${end} of ${matchedTotal} matches`;
         return;
       }
+
       if (typeof totalCount === "number") {
-        stats.textContent = `Showing ${loaded > 0 ? 1 : 0}–${loaded} of ~${totalCount} records`;
+        const start = loaded > 0 ? 1 : 0;
+        const end = loaded;
+        stats.textContent = `Showing ${start}–${end} of ~${totalCount} records`;
       } else {
         stats.textContent = `Loaded ${loaded} records`;
       }
     }
 
-    function updateStats() { updateStatsRange(); }
-    function prettyLabel(label) { return normalizeKey(label); }
-    function toggleCard(header) { header.parentElement.classList.toggle("expanded"); }
+    function updateStats() {
+      updateStatsRange();
+    }
 
+    function prettyLabel(label) {
+      return normalizeKey(label);
+    }
+
+    function toggleCard(header) {
+      const card = header.parentElement;
+      card.classList.toggle("expanded");
+    }
+
+    // ==============================
+    // RENDER
+    // ==============================
     function displayRecords(records) {
       const content = document.getElementById("content");
+
       if (!records || records.length === 0) {
         content.innerHTML = `<div class="no-results">No records found.</div>`;
         return;
       }
-      records = [...records].sort((a, b) => String(getCompanyTitle(a)).localeCompare(String(getCompanyTitle(b))));
+
+      records = [...records].sort((a, b) =>
+        String(getCompanyTitle(a)).localeCompare(String(getCompanyTitle(b)))
+      );
+
       const grid = document.createElement("div");
       grid.className = "records-grid";
 
       records.forEach((record) => {
         const card = document.createElement("div");
         card.className = "record-card";
+
         const title = getCompanyTitle(record);
         const keyMap = buildKeyMap(record);
+
         const excludedNormalizedKeys = new Set([
-          normalizeKey("Company"), normalizeKey("company"),
-          normalizeKey("SourceSheet"), normalizeKey("CompanyName")
+          normalizeKey("Company"),
+          normalizeKey("company"),
+          normalizeKey("SourceSheet"),
+          normalizeKey("CompanyName")
         ]);
+
         let fieldsHtml = "";
+
+        // Use FIELD_ORDER if available, otherwise fall back to record keys
         const fieldList = FIELD_ORDER.length > 0
           ? FIELD_ORDER
           : Object.keys(record).filter(k => !excludedNormalizedKeys.has(normalizeKey(k)));
@@ -556,14 +680,31 @@
         fieldList.forEach(label => {
           const normalizedLabel = normalizeKey(label);
           const originalKey = keyMap.get(normalizedLabel);
+
           if (!originalKey) return;
           if (excludedNormalizedKeys.has(normalizedLabel)) return;
+
           const value = record[originalKey];
           if (value === null || value === undefined) return;
+
           const str = Array.isArray(value) ? value.join(", ") : String(value);
-          const nv = str.trim().toLowerCase();
-          if (nv === "" || nv === "n/a" || nv === "na" || nv === "n//a") return;
-          fieldsHtml += `<div class="field-row"><div class="field-label">${prettyLabel(label)}</div><div class="field-value">${str}</div></div>`;
+          const normalizedValue = str.trim().toLowerCase();
+
+          if (
+            normalizedValue === "" ||
+            normalizedValue === "n/a" ||
+            normalizedValue === "na" ||
+            normalizedValue === "n//a"
+          ) {
+            return;
+          }
+
+          fieldsHtml += `
+            <div class="field-row">
+              <div class="field-label">${prettyLabel(label)}</div>
+              <div class="field-value">${str}</div>
+            </div>
+          `;
         });
 
         card.innerHTML = `
@@ -571,21 +712,34 @@
             ${title}
             <span class="expand-icon">▼</span>
           </div>
-          <div class="record-content"><div class="field-grid">${fieldsHtml}</div></div>`;
+          <div class="record-content">
+            <div class="field-grid">${fieldsHtml}</div>
+          </div>
+        `;
+
         grid.appendChild(card);
       });
+
       content.innerHTML = "";
       content.appendChild(grid);
     }
 
+    // ==============================
+    // API CALL (server-side paging)
+    // ==============================
     async function fetchPage({ query, reset }) {
       if (isLoading) return;
       isLoading = true;
+
       try {
         if (reset) {
-          allData = []; nextKey = null; matchedTotal = null;
-          showLoadMoreButton(false); renderSkeleton();
+          allData = [];
+          nextKey = null;
+          matchedTotal = null;
+          showLoadMoreButton(false);
+          renderSkeleton();
         }
+
         const params = new URLSearchParams();
         if (query) params.set("q", query);
         params.set("limit", String(PAGE_SIZE));
@@ -594,23 +748,34 @@
 
         const url = `${READ_API_BASE_URL}?${params.toString()}`;
         const res = await fetch(url, { method: "GET", mode: "cors" });
+
         if (!res.ok) {
           const text = await res.text().catch(() => "");
           throw new Error(`HTTP ${res.status} ${res.statusText} - ${text}`);
         }
+
         const payload = await res.json();
         matchedTotal = (typeof payload.matchedTotal === "number") ? payload.matchedTotal : null;
+
+        // Update column order if the API returned it
         if (Array.isArray(payload.columns) && payload.columns.length > 0) {
           FIELD_ORDER = payload.columns;
         }
+
         const items = Array.isArray(payload.items) ? payload.items : [];
         nextKey = payload.nextKey || null;
+
         if (typeof payload.total === "number") totalCount = payload.total;
+
         allData = allData.concat(items);
         displayRecords(allData);
         updateStats();
-        if (payload.mode === "exact_record") { showLoadMoreButton(false); }
-        else { showLoadMoreButton(!!nextKey); }
+
+        if (payload.mode === "exact_record") {
+          showLoadMoreButton(false);
+        } else {
+          showLoadMoreButton(!!nextKey);
+        }
       } catch (err) {
         console.error("Fetch error:", err);
         document.getElementById("content").innerHTML =
@@ -622,27 +787,51 @@
       }
     }
 
-    function loadFirstPage() { lastQuery = ""; fetchPage({ query: "", reset: true }); }
+    // ==============================
+    // WIRES
+    // ==============================
+    function loadFirstPage() {
+      lastQuery = "";
+      fetchPage({ query: "", reset: true });
+    }
 
     let searchTimer = null;
+
+    // ✅ NEW: search box + clear button refs & helpers
     const searchBoxEl = document.getElementById("searchBox");
     const clearBtnEl = document.getElementById("clearSearchBtn");
 
     function syncClearButton() {
-      if (searchBoxEl.value && searchBoxEl.value.length > 0) clearBtnEl.classList.remove("hidden");
-      else clearBtnEl.classList.add("hidden");
+      if (searchBoxEl.value && searchBoxEl.value.length > 0) {
+        clearBtnEl.classList.remove("hidden");
+      } else {
+        clearBtnEl.classList.add("hidden");
+      }
     }
 
     clearBtnEl.addEventListener("click", () => {
-      searchBoxEl.value = ""; lastQuery = ""; syncClearButton(); searchBoxEl.focus();
+      searchBoxEl.value = "";
+      lastQuery = "";
+      syncClearButton();
+      searchBoxEl.focus();
+
+      // Trigger same behavior as typing so your existing debounce/search runs
       searchBoxEl.dispatchEvent(new Event("input", { bubbles: true }));
     });
 
-    searchBoxEl.addEventListener("keydown", (e) => { if (e.key === "Escape") clearBtnEl.click(); });
+    // Optional: ESC clears
+    searchBoxEl.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        clearBtnEl.click();
+      }
+    });
 
+    // Search input handler (updated to sync X visibility)
     searchBoxEl.addEventListener("input", (e) => {
       syncClearButton();
+
       lastQuery = e.target.value.trim();
+
       clearTimeout(searchTimer);
       searchTimer = setTimeout(() => {
         setLoadMoreLoading(false);
@@ -655,19 +844,28 @@
       fetchPage({ query: lastQuery, reset: false });
     });
 
+    // ✅ Tab switching
     document.querySelectorAll(".tab-btn").forEach(btn => {
       btn.addEventListener("click", () => {
         if (btn.dataset.sheet === activeSheet) return;
+
         document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
         btn.classList.add("active");
         activeSheet = btn.dataset.sheet;
-        searchBoxEl.value = ""; lastQuery = ""; syncClearButton();
+
+        // Reset search and reload
+        searchBoxEl.value = "";
+        lastQuery = "";
+        syncClearButton();
         fetchPage({ query: "", reset: true });
       });
     });
 
+    // ✅ initialize visibility on load
     syncClearButton();
+
     checkAuthState();
   </script>
 </body>
 </html>
+
