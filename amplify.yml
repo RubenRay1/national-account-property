@@ -1,9 +1,20 @@
 version: 1
-frontend:
+backend:
   phases:
     build:
       commands:
+        - echo "No backend build required"
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - echo "No preBuild needed"
+    build:
+      commands:
         - echo "Static site - no build needed"
+    postBuild:
+      commands:
+        - echo "Build completed successfully"
   artifacts:
     baseDirectory: /
     files:
