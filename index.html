@@ -8,173 +8,163 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: #0f2b4a;
-      background: linear-gradient(160deg, #0f2b4a 0%, #1a4a7a 40%, #2563a0 100%);
+      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, 'Helvetica Neue', sans-serif;
+      background: #0c1a2e;
+      background: linear-gradient(170deg, #0c1a2e 0%, #14365e 35%, #1b5590 70%, #2470b0 100%);
       background-attachment: fixed;
-      color: #333;
+      color: #2d3748;
       min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
     }
 
-    /* ==============================
-       HEADER
-    ============================== */
     .header {
-      background: rgba(255,255,255,0.06);
-      backdrop-filter: blur(12px);
+      background: rgba(0,0,0,0.18);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
       color: white;
-      padding: 1.5rem 1rem;
+      padding: 1.25rem 1.5rem 1.4rem;
       text-align: center;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
     }
     .header h1 {
-      font-size: 1.75rem;
-      margin-bottom: 0.25rem;
+      font-size: 1.55rem;
+      margin-bottom: 0.15rem;
       font-weight: 700;
-      letter-spacing: -0.02em;
+      letter-spacing: -0.03em;
     }
     .header p {
-      font-size: 0.95rem;
-      opacity: 0.8;
+      font-size: 0.82rem;
+      opacity: 0.55;
       font-weight: 400;
+      letter-spacing: 0.02em;
     }
 
-    /* ==============================
-       CONTAINER
-    ============================== */
     .container {
-      max-width: 960px;
+      max-width: 860px;
       margin: 0 auto;
-      padding: 1.5rem;
+      padding: 1.25rem 1.5rem;
     }
 
-    /* ==============================
-       TAB BAR
-    ============================== */
+    /* TAB BAR */
     .tab-bar {
       display: flex;
-      gap: 0;
-      margin-bottom: 1rem;
-      background: rgba(255,255,255,0.12);
-      border-radius: 14px;
-      padding: 5px;
-      backdrop-filter: blur(12px);
+      margin-bottom: 0.75rem;
+      background: rgba(255,255,255,0.08);
+      border-radius: 11px;
+      padding: 3px;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,0.06);
     }
     .tab-btn {
       flex: 1;
-      padding: 0.7rem 0.75rem;
+      padding: 0.6rem 0.7rem;
       border: none;
-      border-radius: 10px;
+      border-radius: 9px;
       background: transparent;
-      color: rgba(255,255,255,0.7);
-      font-size: 0.88rem;
+      color: rgba(255,255,255,0.55);
+      font-size: 0.8rem;
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: all 0.18s ease;
       text-align: center;
-      line-height: 1.3;
-      /* Allow text to wrap on mobile instead of truncating */
+      line-height: 1.35;
       white-space: normal;
       word-break: break-word;
     }
     .tab-btn:hover {
-      color: white;
-      background: rgba(255,255,255,0.08);
+      color: rgba(255,255,255,0.85);
+      background: rgba(255,255,255,0.06);
     }
     .tab-btn.active {
       background: white;
-      color: #1a4a7a;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.12);
+      color: #14365e;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.1);
+      font-weight: 700;
     }
 
-    /* ==============================
-       SEARCH SECTION
-    ============================== */
+    /* SEARCH */
     .search-section {
       background: white;
-      padding: 1.25rem;
-      border-radius: 14px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-      margin-bottom: 1rem;
+      padding: 1rem 1.15rem;
+      border-radius: 11px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.03), 0 4px 14px rgba(0,0,0,0.05);
+      margin-bottom: 0.75rem;
     }
-    .search-input-wrap {
-      position: relative;
-      width: 100%;
-    }
+    .search-input-wrap { position: relative; width: 100%; }
     .search-box {
       width: 100%;
-      padding: 0.85rem 1rem;
-      padding-right: 2.75rem;
-      border: 2px solid #e8ecf0;
-      border-radius: 10px;
-      font-size: 15px;
-      margin-bottom: 0.75rem;
-      transition: border-color 0.2s ease, box-shadow 0.2s ease;
-      background: #f8f9fb;
-      color: #333;
+      padding: 0.65rem 0.85rem;
+      padding-right: 2.4rem;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 14px;
+      margin-bottom: 0.5rem;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+      background: #f7f8fa;
+      color: #2d3748;
     }
     .search-box:focus {
       outline: none;
-      border-color: #2563a0;
-      box-shadow: 0 0 0 3px rgba(37,99,160,0.1);
+      border-color: #2470b0;
+      box-shadow: 0 0 0 3px rgba(36,112,176,0.08);
       background: white;
     }
-    .search-box::placeholder { color: #999; }
+    .search-box::placeholder { color: #a0aec0; font-size: 13px; }
 
     .clear-btn {
       position: absolute;
-      right: 0.75rem;
-      top: 38%;
+      right: 0.55rem;
+      top: 34%;
       transform: translateY(-50%);
-      width: 28px;
-      height: 28px;
+      width: 22px;
+      height: 22px;
       border: none;
       border-radius: 999px;
       background: transparent;
-      color: #999;
-      font-size: 20px;
+      color: #a0aec0;
+      font-size: 16px;
       line-height: 1;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      transition: background 0.15s ease;
+      transition: all 0.1s ease;
     }
-    .clear-btn:hover { background: rgba(0,0,0,0.06); color: #666; }
-    .clear-btn:focus { outline: none; box-shadow: 0 0 0 3px rgba(37,99,160,0.15); }
+    .clear-btn:hover { background: #edf2f7; color: #718096; }
+    .clear-btn:focus { outline: none; box-shadow: 0 0 0 2px rgba(36,112,176,0.12); }
 
     .stats {
       text-align: center;
-      color: #888;
-      font-size: 0.85rem;
+      color: #a0aec0;
+      font-size: 0.75rem;
       font-weight: 500;
+      letter-spacing: 0.015em;
     }
 
-    /* ==============================
-       LOADING / SKELETON
-    ============================== */
+    /* LOADING / SKELETON */
     .loading {
       text-align: center;
-      padding: 3rem;
-      color: #888;
+      padding: 2.5rem;
+      color: #a0aec0;
       background: white;
-      border-radius: 14px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-      font-size: 0.95rem;
+      border-radius: 11px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.03), 0 4px 14px rgba(0,0,0,0.05);
+      font-size: 0.85rem;
     }
     .skeleton-card {
       background: white;
-      border-radius: 14px;
-      padding: 1.25rem;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      border-radius: 10px;
+      padding: 1rem;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.02);
     }
     .sk-line {
-      height: 12px;
-      border-radius: 6px;
-      margin: 10px 0;
-      background: linear-gradient(90deg, #f0f0f0, #f8f8f8, #f0f0f0);
+      height: 10px;
+      border-radius: 5px;
+      margin: 8px 0;
+      background: linear-gradient(90deg, #edf2f7, #f7fafc, #edf2f7);
       background-size: 200% 100%;
-      animation: shimmer 1.2s infinite;
+      animation: shimmer 1.4s ease infinite;
     }
     .sk-line.w40 { width: 40%; }
     .sk-line.w60 { width: 60%; }
@@ -184,236 +174,205 @@
       100% { background-position: -200% 0; }
     }
 
-    /* ==============================
-       RECORD CARDS
-    ============================== */
-    .records-grid { display: grid; gap: 0.75rem; }
+    /* RECORD CARDS */
+    .records-grid { display: grid; gap: 0.45rem; }
 
     .record-card {
       background: white;
-      border-radius: 14px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      border-radius: 10px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.03), 0 1px 6px rgba(0,0,0,0.03);
       overflow: hidden;
-      transition: box-shadow 0.2s ease, transform 0.2s ease;
+      transition: box-shadow 0.15s ease, transform 0.15s ease;
       cursor: pointer;
     }
     .record-card:hover {
-      box-shadow: 0 6px 24px rgba(0,0,0,0.1);
+      box-shadow: 0 3px 12px rgba(0,0,0,0.07);
       transform: translateY(-1px);
     }
 
     .record-header {
-      background: linear-gradient(135deg, #1a4a7a 0%, #2563a0 100%);
+      background: linear-gradient(135deg, #14365e 0%, #1b5590 50%, #2470b0 100%);
       color: white;
-      padding: 1rem 1.25rem;
+      padding: 0.8rem 1rem;
       font-weight: 600;
-      font-size: 1rem;
+      font-size: 0.88rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 0.5rem;
+      letter-spacing: 0.005em;
     }
-    .record-header-title {
-      flex: 1;
-      min-width: 0;
-    }
+    .record-header-title { flex: 1; min-width: 0; }
 
     .expand-icon {
-      font-size: 1.2rem;
-      transition: transform 0.25s ease;
+      font-size: 0.95rem;
+      transition: transform 0.2s ease;
       flex-shrink: 0;
-      opacity: 0.8;
+      opacity: 0.6;
     }
-    .record-card.expanded .expand-icon { transform: rotate(180deg); }
+    .record-card.expanded .expand-icon { transform: rotate(180deg); opacity: 1; }
 
     .record-content {
       padding: 0;
       max-height: 0;
       overflow: hidden;
-      transition: all 0.3s ease;
+      transition: all 0.25s ease;
     }
     .record-card.expanded .record-content {
-      padding: 1.25rem;
+      padding: 1rem 1.15rem;
       max-height: none;
     }
 
-    /* ==============================
-       FIELD GRID (inside expanded card)
-    ============================== */
+    /* FIELD GRID */
     .field-grid { display: grid; gap: 0; }
-
     .field-row {
       display: grid;
-      grid-template-columns: 1fr 2fr;
-      gap: 0.75rem;
-      align-items: start;
-      border-bottom: 1px solid #f0f2f5;
-      padding: 0.7rem 0;
+      grid-template-columns: 1fr 2.5fr;
+      gap: 0.65rem;
+      align-items: baseline;
+      border-bottom: 1px solid #f0f3f7;
+      padding: 0.55rem 0;
     }
     .field-row:last-child { border-bottom: none; }
-
     .field-label {
       font-weight: 600;
-      color: #1a4a7a;
-      font-size: 0.82rem;
-      text-transform: none;
-      line-height: 1.4;
+      color: #14365e;
+      font-size: 0.74rem;
+      line-height: 1.45;
+      letter-spacing: 0.01em;
     }
     .field-value {
-      line-height: 1.5;
+      line-height: 1.55;
       white-space: pre-wrap;
       word-break: normal;
       overflow-wrap: anywhere;
       hyphens: auto;
-      color: #444;
-      font-size: 0.9rem;
+      color: #4a5568;
+      font-size: 0.84rem;
     }
 
-    /* ==============================
-       MOBILE LAYOUT
-    ============================== */
+    /* MOBILE */
     @media (max-width: 768px) {
-      .header { padding: 1.25rem 1rem; }
-      .header h1 { font-size: 1.35rem; }
-      .header p { font-size: 0.85rem; }
-
-      .container { padding: 0.75rem; }
-
-      .tab-btn {
-        font-size: 0.78rem;
-        padding: 0.6rem 0.5rem;
-      }
-
-      .search-section { padding: 1rem; }
-      .search-box { padding: 0.75rem 0.85rem; padding-right: 2.5rem; font-size: 14px; }
-
-      .record-header {
-        padding: 0.85rem 1rem;
-        font-size: 0.95rem;
-      }
-      .record-card.expanded .record-content { padding: 1rem; }
-
-      .field-row {
-        grid-template-columns: 1fr;
-        gap: 0.25rem;
-        padding: 0.75rem 0;
-      }
-      .field-label {
-        font-size: 0.85rem;
-        line-height: 1.3;
-      }
-      .field-value {
-        font-size: 0.9rem;
-        line-height: 1.45;
-        color: #555;
-      }
+      .header { padding: 1rem 0.75rem 1.1rem; }
+      .header h1 { font-size: 1.2rem; }
+      .header p { font-size: 0.75rem; }
+      .container { padding: 0.6rem; }
+      .tab-bar { border-radius: 9px; padding: 3px; }
+      .tab-btn { font-size: 0.72rem; padding: 0.5rem 0.35rem; border-radius: 7px; }
+      .search-section { padding: 0.75rem; border-radius: 9px; }
+      .search-box { padding: 0.6rem 0.7rem; padding-right: 2.1rem; font-size: 14px; border-radius: 7px; }
+      .records-grid { gap: 0.35rem; }
+      .record-card { border-radius: 9px; }
+      .record-header { padding: 0.7rem 0.85rem; font-size: 0.85rem; }
+      .record-card.expanded .record-content { padding: 0.8rem; }
+      .field-row { grid-template-columns: 1fr; gap: 0.12rem; padding: 0.55rem 0; }
+      .field-label { font-size: 0.78rem; color: #1b5590; }
+      .field-value { font-size: 0.85rem; line-height: 1.5; color: #4a5568; }
     }
 
-    /* ==============================
-       MISC
-    ============================== */
+    /* MISC */
     .no-results {
       text-align: center;
-      padding: 3rem;
-      color: #888;
+      padding: 2.5rem;
+      color: #a0aec0;
       background: white;
-      border-radius: 14px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-      font-size: 0.95rem;
+      border-radius: 11px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.03), 0 4px 14px rgba(0,0,0,0.05);
+      font-size: 0.85rem;
     }
-
-    .load-more-wrap { display: flex; justify-content: center; margin: 1rem 0 2rem 0; }
+    .load-more-wrap { display: flex; justify-content: center; margin: 0.75rem 0 2rem 0; }
     .load-more-btn {
-      background: #F47920;
+      background: linear-gradient(135deg, #d96a0a 0%, #F47920 100%);
       color: white;
       border: none;
-      padding: 0.75rem 1.5rem;
-      border-radius: 10px;
+      padding: 0.6rem 1.6rem;
+      border-radius: 8px;
       cursor: pointer;
-      font-size: 0.9rem;
+      font-size: 0.8rem;
       font-weight: 700;
-      transition: transform 0.15s ease, opacity 0.15s ease;
+      letter-spacing: 0.01em;
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
+      box-shadow: 0 2px 6px rgba(244,121,32,0.2);
     }
-    .load-more-btn:hover { transform: translateY(-1px); }
-    .load-more-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .load-more-btn:hover { transform: translateY(-1px); box-shadow: 0 3px 10px rgba(244,121,32,0.25); }
+    .load-more-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
 
     .bms-badge {
       display: inline-block;
-      background: #F47920;
+      background: linear-gradient(135deg, #d96a0a 0%, #F47920 100%);
       color: white;
-      padding: 0.2rem 0.6rem;
+      padding: 0.12rem 0.5rem;
       border-radius: 20px;
-      font-size: 0.65rem;
+      font-size: 0.55rem;
       font-weight: 700;
-      margin-left: 0.5rem;
+      margin-left: 0.4rem;
       vertical-align: middle;
-      letter-spacing: 0.03em;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
     }
 
-    /* ==============================
-       AUTH
-    ============================== */
+    /* AUTH */
     .auth-container {
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      background: linear-gradient(160deg, #0f2b4a 0%, #1a4a7a 40%, #2563a0 100%);
+      background: linear-gradient(170deg, #0c1a2e 0%, #14365e 35%, #1b5590 70%, #2470b0 100%);
     }
     .auth-card {
       background: white;
-      padding: 2.5rem;
-      border-radius: 16px;
-      box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+      padding: 2.25rem 1.75rem;
+      border-radius: 14px;
+      box-shadow: 0 8px 28px rgba(0,0,0,0.16), 0 2px 6px rgba(0,0,0,0.06);
       text-align: center;
-      max-width: 380px;
+      max-width: 350px;
       width: 90%;
     }
-    .auth-card h1 { color: #1a4a7a; font-size: 1.5rem; }
+    .auth-card h1 { color: #14365e; font-size: 1.3rem; font-weight: 700; }
     .auth-button {
-      background: linear-gradient(135deg, #1a4a7a 0%, #2563a0 100%);
+      background: linear-gradient(135deg, #14365e 0%, #1b5590 50%, #2470b0 100%);
       color: white;
       border: none;
-      padding: 0.85rem 1.5rem;
-      border-radius: 10px;
-      font-size: 1rem;
+      padding: 0.75rem 1.25rem;
+      border-radius: 8px;
+      font-size: 0.92rem;
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: all 0.15s ease;
       width: 100%;
       margin-top: 1rem;
+      box-shadow: 0 2px 6px rgba(20,54,94,0.18);
     }
     .auth-button:hover {
       transform: translateY(-1px);
-      box-shadow: 0 6px 16px rgba(26,74,122,0.3);
+      box-shadow: 0 4px 12px rgba(20,54,94,0.25);
     }
-
     .user-info {
-      background: rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.05);
       color: white;
-      padding: 0.6rem 1rem;
-      border-radius: 10px;
-      margin-bottom: 0.75rem;
+      padding: 0.45rem 0.85rem;
+      border-radius: 7px;
+      margin-bottom: 0.5rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 0.85rem;
-      max-width: 960px;
+      font-size: 0.75rem;
+      max-width: 860px;
       margin-left: auto;
       margin-right: auto;
+      opacity: 0.7;
     }
     .logout-btn {
       background: #F47920;
       color: white;
       border: none;
-      padding: 0.4rem 0.75rem;
-      border-radius: 6px;
+      padding: 0.3rem 0.6rem;
+      border-radius: 5px;
       cursor: pointer;
-      font-size: 0.8rem;
+      font-size: 0.7rem;
       font-weight: 600;
     }
     #logoutBtn { display: none !important; }
-
     .hidden { display: none; }
   </style>
 </head>
@@ -443,26 +402,10 @@
       </div>
 
       <div class="search-section">
-        <!-- ✅ NEW: input wrapper + clear button -->
         <div class="search-input-wrap">
-          <input
-            type="text"
-            id="searchBox"
-            class="search-box"
-            placeholder="Search (Company)..."
-            autocomplete="off"
-          />
-          <button
-            type="button"
-            id="clearSearchBtn"
-            class="clear-btn hidden"
-            aria-label="Clear search"
-            title="Clear"
-          >
-            ×
-          </button>
+          <input type="text" id="searchBox" class="search-box" placeholder="Search (Company)..." autocomplete="off" />
+          <button type="button" id="clearSearchBtn" class="clear-btn hidden" aria-label="Clear search" title="Clear">×</button>
         </div>
-
         <div id="stats" class="stats">Loading data...</div>
       </div>
 
@@ -494,7 +437,7 @@
     let activeSheet = "National Account Protocols";
 
     // ==============================
-    // AUTH (unchanged)
+    // AUTH
     // ==============================
     async function checkAuthState() {
       try {
@@ -552,7 +495,6 @@
     // ==============================
     // HELPERS
     // ==============================
-
     function normalizeKey(s) {
       return String(s ?? "")
         .replace(/\r\n/g, "\n")
@@ -625,13 +567,8 @@
       }
     }
 
-    function updateStats() {
-      updateStatsRange();
-    }
-
-    function prettyLabel(label) {
-      return normalizeKey(label);
-    }
+    function updateStats() { updateStatsRange(); }
+    function prettyLabel(label) { return normalizeKey(label); }
 
     function toggleCard(header) {
       const card = header.parentElement;
@@ -672,7 +609,6 @@
 
         let fieldsHtml = "";
 
-        // Use FIELD_ORDER if available, otherwise fall back to record keys
         const fieldList = FIELD_ORDER.length > 0
           ? FIELD_ORDER
           : Object.keys(record).filter(k => !excludedNormalizedKeys.has(normalizeKey(k)));
@@ -725,7 +661,7 @@
     }
 
     // ==============================
-    // API CALL (server-side paging)
+    // API CALL
     // ==============================
     async function fetchPage({ query, reset }) {
       if (isLoading) return;
@@ -757,7 +693,6 @@
         const payload = await res.json();
         matchedTotal = (typeof payload.matchedTotal === "number") ? payload.matchedTotal : null;
 
-        // Update column order if the API returned it
         if (Array.isArray(payload.columns) && payload.columns.length > 0) {
           FIELD_ORDER = payload.columns;
         }
@@ -796,8 +731,6 @@
     }
 
     let searchTimer = null;
-
-    // ✅ NEW: search box + clear button refs & helpers
     const searchBoxEl = document.getElementById("searchBox");
     const clearBtnEl = document.getElementById("clearSearchBtn");
 
@@ -814,24 +747,16 @@
       lastQuery = "";
       syncClearButton();
       searchBoxEl.focus();
-
-      // Trigger same behavior as typing so your existing debounce/search runs
       searchBoxEl.dispatchEvent(new Event("input", { bubbles: true }));
     });
 
-    // Optional: ESC clears
     searchBoxEl.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") {
-        clearBtnEl.click();
-      }
+      if (e.key === "Escape") clearBtnEl.click();
     });
 
-    // Search input handler (updated to sync X visibility)
     searchBoxEl.addEventListener("input", (e) => {
       syncClearButton();
-
       lastQuery = e.target.value.trim();
-
       clearTimeout(searchTimer);
       searchTimer = setTimeout(() => {
         setLoadMoreLoading(false);
@@ -844,16 +769,13 @@
       fetchPage({ query: lastQuery, reset: false });
     });
 
-    // ✅ Tab switching
+    // Tab switching
     document.querySelectorAll(".tab-btn").forEach(btn => {
       btn.addEventListener("click", () => {
         if (btn.dataset.sheet === activeSheet) return;
-
         document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
         btn.classList.add("active");
         activeSheet = btn.dataset.sheet;
-
-        // Reset search and reload
         searchBoxEl.value = "";
         lastQuery = "";
         syncClearButton();
@@ -861,11 +783,8 @@
       });
     });
 
-    // ✅ initialize visibility on load
     syncClearButton();
-
     checkAuthState();
   </script>
 </body>
 </html>
-
