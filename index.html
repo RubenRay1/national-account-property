@@ -439,20 +439,67 @@
     // ==============================
     // AUTH
     // ==============================
+    const COGNITO_DOMAIN = "https://national-account-property.auth.us-east-1.amazoncognito.com";
+    const CLIENT_ID = "7apeuo3q6hulod0d3i002vc0b";
+    const REDIRECT_URI = window.location.origin + "/";
+
+    function decodeJwtPayload(token) {
+      try {
+        const base64 = token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/");
+        return JSON.parse(atob(base64));
+      } catch (e) { return null; }
+    }
+
+    async function exchangeCodeForTokens(code) {
+      try {
+        const res = await fetch(`${COGNITO_DOMAIN}/oauth2/token`, {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: new URLSearchParams({
+            grant_type: "authorization_code",
+            client_id: CLIENT_ID,
+            code: code,
+            redirect_uri: REDIRECT_URI,
+          }),
+        });
+        if (!res.ok) return null;
+        return await res.json();
+      } catch (e) { return null; }
+    }
+
+    function displayUserInfo(idToken) {
+      const payload = decodeJwtPayload(idToken);
+      if (!payload) return;
+      const name = payload.name || payload.email || payload["cognito:username"] || "Authenticated User";
+      document.getElementById("userEmail").textContent = name;
+    }
+
     async function checkAuthState() {
       try {
         const urlParams = new URLSearchParams(window.location.search);
         const code = urlParams.get("code");
 
         if (code) {
-          showMainApp();
-          document.getElementById("userEmail").textContent = "Authenticated User";
           window.history.replaceState({}, document.title, window.location.pathname);
+          const tokens = await exchangeCodeForTokens(code);
+          if (tokens && tokens.id_token) {
+            localStorage.setItem("cognitoIdToken", tokens.id_token);
+            localStorage.setItem("cognitoToken", "authenticated");
+            displayUserInfo(tokens.id_token);
+            showMainApp();
+          } else {
+            // Fallback if token exchange fails
+            localStorage.setItem("cognitoToken", "authenticated");
+            document.getElementById("userEmail").textContent = "Authenticated User";
+            showMainApp();
+          }
         } else {
           const token = localStorage.getItem("cognitoToken");
           if (token) {
+            const idToken = localStorage.getItem("cognitoIdToken");
+            if (idToken) { displayUserInfo(idToken); }
+            else { document.getElementById("userEmail").textContent = "Authenticated User"; }
             showMainApp();
-            document.getElementById("userEmail").textContent = "Authenticated User";
           } else {
             showAuthScreen();
           }
@@ -466,6 +513,7 @@
       document.getElementById("authScreen").classList.remove("hidden");
       document.getElementById("mainApp").classList.add("hidden");
       localStorage.removeItem("cognitoToken");
+      localStorage.removeItem("cognitoIdToken");
     }
 
     function showMainApp() {
@@ -477,19 +525,21 @@
 
     document.getElementById("loginBtn").addEventListener("click", () => {
       window.location.href =
-        "https://national-account-property.auth.us-east-1.amazoncognito.com/oauth2/authorize" +
+        COGNITO_DOMAIN + "/oauth2/authorize" +
         "?identity_provider=OktaNAP" +
-        "&client_id=7apeuo3q6hulod0d3i002vc0b" +
+        "&client_id=" + CLIENT_ID +
         "&response_type=code" +
         "&scope=email+openid+profile" +
-        "&redirect_uri=" + encodeURIComponent(window.location.origin + "/");
+        "&redirect_uri=" + encodeURIComponent(REDIRECT_URI);
     });
 
     document.getElementById("logoutBtn").addEventListener("click", () => {
+      localStorage.removeItem("cognitoToken");
+      localStorage.removeItem("cognitoIdToken");
       window.location.href =
-        "https://national-account-property.auth.us-east-1.amazoncognito.com/logout" +
-        "?client_id=7apeuo3q6hulod0d3i002vc0b" +
-        "&logout_uri=" + encodeURIComponent(window.location.origin + "/");
+        COGNITO_DOMAIN + "/logout" +
+        "?client_id=" + CLIENT_ID +
+        "&logout_uri=" + encodeURIComponent(REDIRECT_URI);
     });
 
     // ==============================
