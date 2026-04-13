@@ -527,7 +527,7 @@
         COGNITO_DOMAIN + "/oauth2/authorize" +
         "?identity_provider=OktaNAP" +
         "&client_id=" + CLIENT_ID +
-        "&response_type=token" +
+        "&response_type=code" +
         "&scope=email+openid+profile" +
         "&redirect_uri=" + encodeURIComponent(REDIRECT_URI);
     });
