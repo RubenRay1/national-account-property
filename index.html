@@ -450,23 +450,6 @@
       } catch (e) { return null; }
     }
 
-    async function exchangeCodeForTokens(code) {
-      try {
-        const res = await fetch(`${COGNITO_DOMAIN}/oauth2/token`, {
-          method: "POST",
-          headers: { "Content-Type": "application/x-www-form-urlencoded" },
-          body: new URLSearchParams({
-            grant_type: "authorization_code",
-            client_id: CLIENT_ID,
-            code: code,
-            redirect_uri: REDIRECT_URI,
-          }),
-        });
-        if (!res.ok) return null;
-        return await res.json();
-      } catch (e) { return null; }
-    }
-
     function displayUserInfo(idToken) {
       const payload = decodeJwtPayload(idToken);
       if (!payload) return;
@@ -474,34 +457,50 @@
       document.getElementById("userEmail").textContent = name;
     }
 
+    function parseHashParams() {
+      const hash = window.location.hash.substring(1);
+      if (!hash) return null;
+      const params = new URLSearchParams(hash);
+      return params.get("id_token") ? params : null;
+    }
+
     async function checkAuthState() {
       try {
-        const urlParams = new URLSearchParams(window.location.search);
-        const code = urlParams.get("code");
+        // Check for tokens in URL hash (implicit grant)
+        const hashParams = parseHashParams();
 
-        if (code) {
-          window.history.replaceState({}, document.title, window.location.pathname);
-          const tokens = await exchangeCodeForTokens(code);
-          if (tokens && tokens.id_token) {
-            localStorage.setItem("cognitoIdToken", tokens.id_token);
+        if (hashParams) {
+          const idToken = hashParams.get("id_token");
+          if (idToken) {
+            localStorage.setItem("cognitoIdToken", idToken);
             localStorage.setItem("cognitoToken", "authenticated");
-            displayUserInfo(tokens.id_token);
-            showMainApp();
+            displayUserInfo(idToken);
           } else {
-            // Fallback if token exchange fails
             localStorage.setItem("cognitoToken", "authenticated");
             document.getElementById("userEmail").textContent = "Authenticated User";
-            showMainApp();
           }
+          // Clear the hash from the URL
+          window.history.replaceState({}, document.title, window.location.pathname);
+          showMainApp();
         } else {
-          const token = localStorage.getItem("cognitoToken");
-          if (token) {
-            const idToken = localStorage.getItem("cognitoIdToken");
-            if (idToken) { displayUserInfo(idToken); }
-            else { document.getElementById("userEmail").textContent = "Authenticated User"; }
+          // Also handle legacy code= flow in case it's still in the URL
+          const urlParams = new URLSearchParams(window.location.search);
+          const code = urlParams.get("code");
+          if (code) {
+            localStorage.setItem("cognitoToken", "authenticated");
+            document.getElementById("userEmail").textContent = "Authenticated User";
+            window.history.replaceState({}, document.title, window.location.pathname);
             showMainApp();
           } else {
-            showAuthScreen();
+            const token = localStorage.getItem("cognitoToken");
+            if (token) {
+              const idToken = localStorage.getItem("cognitoIdToken");
+              if (idToken) { displayUserInfo(idToken); }
+              else { document.getElementById("userEmail").textContent = "Authenticated User"; }
+              showMainApp();
+            } else {
+              showAuthScreen();
+            }
           }
         }
       } catch (e) {
@@ -528,7 +527,7 @@
         COGNITO_DOMAIN + "/oauth2/authorize" +
         "?identity_provider=OktaNAP" +
         "&client_id=" + CLIENT_ID +
-        "&response_type=code" +
+        "&response_type=token" +
         "&scope=email+openid+profile" +
         "&redirect_uri=" + encodeURIComponent(REDIRECT_URI);
     });
